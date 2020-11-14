@@ -9,8 +9,13 @@
     near — Camera frustum near plane.
     far — Camera frustum far plane.*/
 
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const canvas=document.querySelector('#c');  
+    canvas.width=window.innerWidth;
+    let prevWidth=canvas.width;
+    canvas.height=window.innerHeight
+    const renderer = new THREE.WebGLRenderer({canvas}); 
+    renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
+    //dirrent to canvas size setting in css
     document.body.appendChild(renderer.domElement);
 
 
@@ -38,6 +43,11 @@
 }
 
     function animate(t) {
+        if(prevWidth!==window.innerWidth){
+            canvas.width=window.innerWidth;
+            canvas.height=window.innerHeight 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
         requestAnimationFrame(animate);
         cube.rotation.x+=0.01;
         cube.rotation.y+=0.01;
