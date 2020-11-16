@@ -1,7 +1,7 @@
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.5, 50);
 camera.position.set(0, 30, 0);
-camera.up.set(0, 0, 1);
+camera.up.set(0, 1,0 );
 camera.lookAt(0, 0, 0);
 
 const canvas = document.querySelector('#canvas');
@@ -21,8 +21,8 @@ scene.add(solarSystem);
 objects.push(solarSystem)
 
 const radius = 1;
-const widthSegment = 15;
-const heightSegment = 15;
+const widthSegment = 6;
+const heightSegment = 6;
 const sphereGeometry = new THREE.SphereGeometry(radius, widthSegment, heightSegment);
 const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xFFFF00 });
 //emissive property is basically the color that will be drawn with no light hitting the surface. Light is added to that color.
@@ -53,6 +53,56 @@ const moonMesh=new THREE.Mesh(sphereGeometry, moonMaterial);
 moonMesh.scale.set(.5,.5,.5);
 moonOrbit.add(moonMesh);
 objects.push(moonMesh)
+
+/*objects.forEach((node)=>{
+    const axes=new THREE.AxesHelper();
+    axes.material.depthTest=false; //axes to appear even though they are inside the spheres
+    //depthTest to false which means they will not check to see if they are drawing behind something else
+    axes.rednerOrder=1; //default is 0 draw atfter the spheres
+    node.add(axes);
+})*/
+class AxisGridHelper{
+    constructor(node,units=10){
+        const axes=new THREE.AxesHelper();
+        axes.material.depthTest=false;
+        axes.renderOrder=2;
+        node.add(axes);
+
+        const grid=new THREE.GridHelper(units,units);
+        grid.material.depthTest=false;
+        grid.renderOrder=1;
+        node.add(grid);
+
+        this.grid=grid;
+        this.axes=axes;
+        this.visible=false;
+    }
+
+    get visible(){
+        return this._visible;
+    }
+
+    set visible(v){
+        this._visible=v;
+        this.grid.visible=v;
+        this.axes.visible=v;
+    }
+}
+let gui=new dat.GUI();
+//guiFolder=gui.addFolder("Planet!");
+
+function makeAxisGrid(node, label, units) {
+  const helper = new AxisGridHelper(node, units);
+  
+  gui.add(helper, 'visible').name(label);
+}
+ 
+makeAxisGrid(solarSystem, 'solarSystem', 25);
+makeAxisGrid(sunMesh, 'sunMesh');
+makeAxisGrid(earthOrbit, 'earthOrbit');
+makeAxisGrid(earthMesh, 'earthMesh');
+makeAxisGrid(moonOrbit, 'moonOrbit');
+makeAxisGrid(moonMesh, 'moonMesh');
 
 //Light
 {
