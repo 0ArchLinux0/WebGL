@@ -15,6 +15,7 @@ renderer.setSize(canvas.widht, canvas.height);
 document.body.appendChild(renderer.domElement)
 
 const objects = [];
+const objectsPlanet=[];
 
 const solarSystem= new THREE.Object3D();
 scene.add(solarSystem);
@@ -24,12 +25,15 @@ const radius = 1;
 const widthSegment = 6;
 const heightSegment = 6;
 const sphereGeometry = new THREE.SphereGeometry(radius, widthSegment, heightSegment);
-const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xFFFF00 });
+const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xFFFF00,flatShading: true});
 //emissive property is basically the color that will be drawn with no light hitting the surface. Light is added to that color.
 const sunMesh = new THREE.Mesh(sphereGeometry, sunMaterial);
 sunMesh.scale.set(5, 5, 5);
 solarSystem.add(sunMesh);
+objectsPlanet.push(sunMesh);
+
 //#### set with line 34 scene.add(sunMesh);
+
 
 const earthOrbit= new THREE.Object3D();
 earthOrbit.position.x=10;
@@ -42,6 +46,7 @@ const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
 //####set with line 27 sunMesh.add(earthMesh);
 earthOrbit.add(earthMesh);
 objects.push(earthMesh)
+objectsPlanet.push(earthMesh);
 
 const moonOrbit=new THREE.Object3D();
 moonOrbit.position.x=2;
@@ -53,6 +58,7 @@ const moonMesh=new THREE.Mesh(sphereGeometry, moonMaterial);
 moonMesh.scale.set(.5,.5,.5);
 moonOrbit.add(moonMesh);
 objects.push(moonMesh)
+objectsPlanet.push(moonMesh);
 
 /*objects.forEach((node)=>{
     const axes=new THREE.AxesHelper();
@@ -61,6 +67,41 @@ objects.push(moonMesh)
     axes.rednerOrder=1; //default is 0 draw atfter the spheres
     node.add(axes);
 })*/
+
+let gui=new dat.GUI();
+guiAxes=gui.addFolder("Axes!");
+guiPlanet=gui.addFolder("Planet!");
+
+
+class PlanetVisibility{
+    constructor(node){
+        this.visible=true;
+        this.node=node;
+    }
+
+    get visible(){
+        return this.visible_setvalue;
+    }
+
+    set visible(v){
+        this.visible_setvalue=v;
+        sunMesh.visible= v;
+
+    }
+}
+
+function setPlanetVis(node) {
+  const setPlanet = new PlanetVisibility(node);
+  guiPlanet.add(setPlanet, 'visible');
+}
+
+/*objectsPlanet.forEach((node)=>{
+    setPlanetVis(node);
+    console.log(node);
+});*/
+setPlanetVis(sunMesh);
+
+
 class AxisGridHelper{
     constructor(node,units=10){
         const axes=new THREE.AxesHelper();
@@ -79,22 +120,28 @@ class AxisGridHelper{
     }
 
     get visible(){
-        return this._visible;
+        return this.visible_setvalue;
     }
 
     set visible(v){
-        this._visible=v;
+        this.visible_setvalue=v;
         this.grid.visible=v;
         this.axes.visible=v;
     }
 }
-let gui=new dat.GUI();
-//guiFolder=gui.addFolder("Planet!");
+
+/*
+function planetVisible(node, label) {
+  guiPlanet.add('false').name('label');
+}
+
+
+planetVisible();*/
 
 function makeAxisGrid(node, label, units) {
   const helper = new AxisGridHelper(node, units);
   
-  gui.add(helper, 'visible').name(label);
+  guiAxes.add(helper, 'visible').name(label);
 }
  
 makeAxisGrid(solarSystem, 'solarSystem', 25);
