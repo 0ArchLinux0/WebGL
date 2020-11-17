@@ -54,6 +54,7 @@ function animate(t) {
         prevWidth = canvas.width;
         prevHeight = canvas.height; //store prev value to compare
         renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+        renderer.setClearColor (0xffffff, 1); //set background color
         // setting camera aspect to prevent view from crushing
         camera.aspect = canvas.width / canvas.height;
         camera.updateProjectionMatrix();
