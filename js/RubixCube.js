@@ -1,5 +1,6 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
+import * as R from './Rotation.js';
 
 function main() {
     const scene = new THREE.Scene();
@@ -63,39 +64,25 @@ function main() {
         return colorMaterials;
     }
 
-    const testcube = new THREE.Mesh(geometry, PIECE_MATERIAL);
-    testcube.position.x = 0;
-    const cubes = [
-        makeInstanceCube("red", -1, 0, 0),
-        makeInstanceCube("red", 0, 0, 0),
-        makeInstanceCube("red", 1, 0, 0),
-        makeInstanceCube("green", -1, 1, 0),
-        makeInstanceCube("green", 0, 1, 0),
-        makeInstanceCube("green", 1, 1, 0),
-        makeInstanceCube("blue", -1, -1, 0),
-        makeInstanceCube("blue", 0, -1, 0),
-        makeInstanceCube("blue", 1, -1, 0),
+    const cubeGroup = [
+        [
+            [],
+            [],
+            []
+        ],
+        [
+            [],
+            [],
+            []
+        ],
+        [
+            [],
+            [],
+            []
+        ]
+    ]; //Better look than initializeing with for loop
 
-        makeInstanceCube("red", -1, 0, 1),
-        makeInstanceCube("red", 0, 0, 1),
-        makeInstanceCube("red", 1, 0, 1),
-        makeInstanceCube("green", -1, 1, 1),
-        makeInstanceCube("green", 0, 1, 1),
-        makeInstanceCube("green", 1, 1, 1),
-        makeInstanceCube("blue", -1, -1, 1),
-        makeInstanceCube("blue", 0, -1, 1),
-        makeInstanceCube("blue", 1, -1, 1),
-
-        makeInstanceCube("red", -1, 0, -1),
-        makeInstanceCube("red", 0, 0, -1),
-        makeInstanceCube("red", 1, 0, -1),
-        makeInstanceCube("green", -1, 1, -1),
-        makeInstanceCube("green", 0, 1, -1),
-        makeInstanceCube("green", 1, 1, -1),
-        makeInstanceCube("blue", -1, -1, -1),
-        makeInstanceCube("blue", 0, -1, -1),
-        makeInstanceCube("blue", 1, -1, -1),
-    ];
+    makeInstanceCube();
 
 
     camera.position.x = 4;
@@ -106,7 +93,7 @@ function main() {
         const color = 0xFFFFFF;
         const intensity = 1;
         /*      const light = new THREE.DirectionalLight(color, intensity);
-         */
+         
         /*    light.position.set(-1, 2, 4);
          */
         const light = new THREE.AmbientLight(color, intensity);
@@ -116,15 +103,19 @@ function main() {
 
     let renderRequested = false;
     //scene.add(testcube);
+    let prev_time = 0;
+    let count=0;
 
-    function render() {
-        console.log("render start");
+    function render(time) {
+       /* if(count+==0){
+            prev_time=time;
+        }*/
         renderRequested = undefined;
         const pixelRatio = window.devicePixelRatio;
-        console.log(pixelRatio);
+        console.log(pixelRatio); //my pc:1
         canvas.width = window.innerWidth * pixelRatio;
         canvas.height = window.innerHeight * pixelRatio;
-        if ((prevWidth !== canvas.width) || (prevHeight !== canvas.hegith)) { //size change
+        if ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
             prevWidth = canvas.width;
@@ -135,16 +126,31 @@ function main() {
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
             //
+
         }
-        /* cube.rotation.x += 0.01;
-         cube.rotation.y += 0.01
-         cubes.forEach((cube, index) => {
-             cube.rotation.x += -0.01;
-             cube.rotation.y += 0.01;
-         });*/
+        const yAxis = new THREE.Vector3(0, 1, 0);
+        cubeGroup.forEach((cubeinPlane) => {
+            cubeinPlane.forEach((cubeinLine) => {
+                cubeinLine.forEach((cube) => {
+                    if (cube.position.y == 1) {
+                        cube.position.x = Math.cos(Math.PI / 180) * cube.position.x - Math.sin(Math.PI / 180) * cube.position.z;
+                        cube.position.z = Math.sin(Math.PI / 180) * cube.position.x + Math.cos(Math.PI / 180) * cube.position.z;
+                        cube.rotation.y -= Math.PI / 180;
+                    }
+
+                    scene.add(cube);
+                })
+            });
+
+        });
+        console.log(prev_time+" "+time);
         controls.update();
         renderer.render(scene, camera);
+        if (time - prev_time > 5000) {
+            prev_time = time;
+        } 
     }
+
     render();
 
     function requestRenderIfNotRequested() {
@@ -155,6 +161,7 @@ function main() {
     }
 
     controls.addEventListener('change', requestRenderIfNotRequested);
+    controls.addEventListener('click', requestRenderIfNotRequested);
     window.addEventListener('resize', requestRenderIfNotRequested); // 역할 찾아보기
 
     /*function makeInstanceCube(x, y, z,color) {
@@ -168,6 +175,8 @@ function main() {
        // scene.add(cube);
         return cube;
     }*/
+    /*const cubeGroup=[];*/
+
 
     function makeInstanceCube() {
         const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
@@ -175,23 +184,18 @@ function main() {
             for (let j = -1; j < 2; j++) {
                 for (let k = -1; k < 2; k++) {
                     const boxGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-                    const boxmaterials = [
-                        /* new THREE.MeshBasicMaterial({color:"blue"}),
-                         new THREE.MeshBasicMaterial({color: "blue"}),
-                         new THREE.MeshBasicMaterial({color: "blue"}),
-                         new THREE.MeshBasicMaterial({color: "blue"}),
-                         new THREE.MeshBasicMaterial({color: "blue"}),*/
-                        new THREE.MeshBasicMaterial({ color: "blue" }),
-                    ];
+                    const boxmaterials = new THREE.MeshBasicMaterial({ color: "blue" });
                     const check = new THREE.Mesh(boxGeometry, boxmaterials);
 
                     const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
                     const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-
+                    //  cubeGroup[i+1][j+1].push(cube);
                     cube.position.x = i;
                     cube.position.y = j;
                     cube.position.z = k;
-                    scene.add(cube);
+                    cubeGroup[i + 1][j + 1].push(cube);
+                    console.log(cube);
+                    /* scene.add(cube);*/
                 }
             }
         }

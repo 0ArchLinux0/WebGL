@@ -1,4 +1,4 @@
-function Rotation = (normal, index, theta,po clockwise) => {
+const Rotation = (normal, index, theta, clockwise) => {
 	
 
 }
