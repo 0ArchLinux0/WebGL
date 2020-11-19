@@ -68,7 +68,7 @@ function main() {
         [
             [],
             [],
-            []
+            [],
         ],
         [
             [],
@@ -101,18 +101,50 @@ function main() {
 
     }
 
+    const yAxis = new THREE.Vector3(0, 1, 0);
+    const RotateAxisY = () => {
+        /*let count=0;*/
+        cubeGroup.forEach((cubeinPlane) => {
+            cubeinPlane.forEach((cubeinLine) => {
+                cubeinLine.forEach((cubeElement) => {
+                    if (cubeElement.cube.position.y == 1) {
+                        cubeElement.angle.y += Math.PI / 120;
+                        cubeElement.cube.position.x = Math.cos(cubeElement.angle.y) * cubeElement.initPosition.x - Math.sin(cubeElement.angle.y) * cubeElement.initPosition.z;
+                        cubeElement.cube.position.z = Math.sin(cubeElement.angle.y) * cubeElement.initPosition.x + Math.cos(cubeElement.angle.y) * cubeElement.initPosition.z;
+                        cubeElement.cube.rotation.y = -cubeElement.angle.y;
+                    }
+
+                    scene.add(cubeElement.cube);
+                })
+            });
+
+        });
+        /*RotateAxisY();
+               if(count>3)*/
+    }
+
+
     let renderRequested = false;
     //scene.add(testcube);
     let prev_time = 0;
-    let count=0;
+    let clock = new THREE.Clock(true);
+
+    const pause = () => {
+        clock.start();
+        const start_time = clock.startime;
+        while (clock.getElapsedTime() < 5000) {}
+        //console.log(clock.getElapsedTime()+"get prev"+prev_time);
+        return;
+    } //clock
 
     function render(time) {
-       /* if(count+==0){
-            prev_time=time;
-        }*/
+        console.log("render");
+        let time_var = time / 1000 * 30;
+        if (time === undefined) { time_var = 0; }
         renderRequested = undefined;
+        // pause(time); 왜 멈추지 대체
         const pixelRatio = window.devicePixelRatio;
-        console.log(pixelRatio); //my pc:1
+        //console.log(pixelRatio); //my pc:1
         canvas.width = window.innerWidth * pixelRatio;
         canvas.height = window.innerHeight * pixelRatio;
         if ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
@@ -125,57 +157,110 @@ function main() {
             // setting camera aspect to prevent view from crushing
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
-            //
-
         }
-        const yAxis = new THREE.Vector3(0, 1, 0);
-        cubeGroup.forEach((cubeinPlane) => {
-            cubeinPlane.forEach((cubeinLine) => {
-                cubeinLine.forEach((cube) => {
-                    if (cube.position.y == 1) {
-                        cube.position.x = Math.cos(Math.PI / 180) * cube.position.x - Math.sin(Math.PI / 180) * cube.position.z;
-                        cube.position.z = Math.sin(Math.PI / 180) * cube.position.x + Math.cos(Math.PI / 180) * cube.position.z;
-                        cube.rotation.y -= Math.PI / 180;
-                    }
-
-                    scene.add(cube);
-                })
-            });
-
-        });
-        console.log(prev_time+" "+time);
+        console.log(prev_time + " " + time);
         controls.update();
         renderer.render(scene, camera);
         if (time - prev_time > 5000) {
             prev_time = time;
-        } 
+        }
+
     }
 
-    render();
+    //render();
+    
 
     function requestRenderIfNotRequested() {
+
         if (!renderRequested) {
             renderRequested = true;
-            requestAnimationFrame(render);
+            requestAnimationFrame(render);           
         }
+
     }
 
-    controls.addEventListener('change', requestRenderIfNotRequested);
-    controls.addEventListener('click', requestRenderIfNotRequested);
-    window.addEventListener('resize', requestRenderIfNotRequested); // 역할 찾아보기
+    function requestRenderIfNotRequestedClick() {
+        
+        requestAnimationFrame(animate);
+        //  console.log(time);
+        //
+        // console.log("rq:"+renderRequested);
+        /* if (!renderRequested) {*/
+        /* while (1) {                                                  // ###########render() executed after the fucntion ends... didn't work
+             pause();    
+             if (runCount++ > 60) { return; }
+             renderRequested = false;
+             render();
+             // requestAnimationFrame(requestRend);
+             //  console.log("click");                 
+             console.log(runCount);
+         }*/
 
-    /*function makeInstanceCube(x, y, z,color) {
-        const cubegeometry = new THREE.BoxGeometry(1, 1, 1); //object contains all the verticles and faces of the cube.
-        //const cube_geometry_ = setGeometryFaceColors(piece, pieceGeometry)
-        const materialNotAffectedByLights = new THREE.MeshPhongMaterial({ color });
-        const cube = new THREE.Mesh(geometry, materialNotAffectedByLights)
-        cube.position.x = x;
-        cube.position.y = y;
-        cube.position.z = z;
-       // scene.add(cube);
-        return cube;
-    }*/
-    /*const cubeGroup=[];*/
+        //}
+        /*  if (!renderRequested) {
+              renderRequested = true;
+              requestAnimationFrame(render);
+              // console.log("click"); 
+              requestAnimationFrame(render);
+              requestAnimationFrame(render);
+              requestAnimationFrame(render);
+
+              requestAnimationFrame(render);requestAnimationFrame(render);
+
+
+
+              console.log(runCount);
+          }*/
+    }
+
+     let isInitialized=false;
+     let i = 0;
+
+    function animate(time) {
+        if(!isInitialized){i=0;isInitialized=true;}
+        console.log("animate "+i);
+
+        if (i++ == 60) { i=0; return 1; }
+        console.log(i);
+        requestAnimationFrame(animate);
+        //console.log("render");
+        let time_var = time / 1000 * 30;
+        if (time === undefined) { time_var = 0; }
+        renderRequested = undefined;
+        // pause(time); 왜 멈추지 대체
+        const pixelRatio = window.devicePixelRatio;
+        //console.log(pixelRatio); //my pc:1
+        canvas.width = window.innerWidth * pixelRatio;
+        canvas.height = window.innerHeight * pixelRatio;
+        if ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+            canvas.width = window.innerWidth * pixelRatio;
+            canvas.height = window.innerHeight * pixelRatio; //change canvas size
+            prevWidth = canvas.width;
+            prevHeight = canvas.height; //store prev value to compare
+            renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+            //renderer.setClearColor(0xffffff);
+            // setting camera aspect to prevent view from crushing
+            camera.aspect = canvas.width / canvas.height;
+            camera.updateProjectionMatrix();
+        }
+
+        RotateAxisY();
+
+        //console.log(prev_time + " " + time);
+        controls.update();
+        renderer.render(scene, camera);
+        if (time - prev_time > 5000) {
+            prev_time = time;
+        }
+
+    }
+
+
+
+    controls.addEventListener('change', requestRenderIfNotRequested); //called first at initializing
+    window.addEventListener('click', requestRenderIfNotRequestedClick);
+    window.addEventListener('resize', requestRenderIfNotRequested);
+
 
 
     function makeInstanceCube() {
@@ -193,13 +278,16 @@ function main() {
                     cube.position.x = i;
                     cube.position.y = j;
                     cube.position.z = k;
-                    cubeGroup[i + 1][j + 1].push(cube);
+                    const initPosition = { x: i, y: j, z: k };
+                    const angle = { x: 0, y: 0, z: 0 };
+                    cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition, angle };
                     console.log(cube);
                     /* scene.add(cube);*/
                 }
             }
         }
     }
+    console.log("main");
 
 }
 
