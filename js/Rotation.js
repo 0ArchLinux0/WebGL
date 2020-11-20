@@ -3,6 +3,7 @@ import * as MakeCube from './MakeCube.js';
 
 let countexe = 1;
 let count=0;
+let resetCount=1;
 let ZERO=1e-1;
 export const RotateAxis = (cubeGroup, axisName, value) => {
     count++;
@@ -16,6 +17,7 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                         if (cubeElement.cube.position.x == value) {
 
                             if (!cubeElement.stored) {
+                                console.log("stored!");
                                 cubeElement.storePosition.z = cubeElement.cube.position.z;
                                 cubeElement.storePosition.y = cubeElement.cube.position.y;
                                 cubeElement.stored = true;
@@ -27,15 +29,20 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                             cubeElement.cube.rotation.x = -cubeElement.angle.x;
                             if(countexe++==540){
                                 countexe=1;
-                                cubeElement.stored=false;
                                 
                             }
                             if(count==60){
+                                cubeElement.stored=false;
                                 cubeElement.cube.position.y=Math.round(cubeElement.cube.position.y);
                                 cubeElement.cube.position.z=Math.round(cubeElement.cube.position.z);
                                 console.log(cubeElement.cube.position.y);
+                                if(resetCount++==2){
+                                    count=0;
+                                    resetCount=1;
+                                }
                             }
                             console.log("X"+countexe);
+                            console.log("x "+cubeElement.cube.position.x+" y "+cubeElement.cube.position.y+" z "+cubeElement.cube.position.z);
                         }
                         break;
 
@@ -54,14 +61,21 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                             
                             if(countexe++==540){
                                 countexe=1;
-                                cubeElement.stored=false;
-                                cubeElement.cube.position.x=Math.round(cubeElement.cube.position.x);
-                                cubeElement.cube.position.z=Math.round(cubeElement.cube.position.z);
+                        
                             }
                              if(count==60){
+                                //count=0; 이렇게하면 하나만 반올림됨.
+                                cubeElement.stored=false;
                                 cubeElement.cube.position.z=Math.round(cubeElement.cube.position.z);
                                 cubeElement.cube.position.x=Math.round(cubeElement.cube.position.x);
+                                console("print");
+                                console.log(cubeElement.cube.position.x);
                                 console.log(cubeElement.cube.position.y);
+                                console.log(cubeElement.cube.position.z);
+                                 if(resetCount++==2){
+                                    count=0;
+                                    resetCount=1;
+                                }
                             }
                             console.log("Y"+countexe);
                         }
@@ -78,16 +92,20 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                             cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) *  cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) *cubeElement.storePosition.x ;
                             cubeElement.cube.position.x = Math.sin(cubeElement.angle.z) *  cubeElement.storePosition.y + Math.cos(cubeElement.angle.z) *cubeElement.storePosition.x ;
                             cubeElement.cube.rotation.z = -cubeElement.angle.z;
-                            if(countexe++==540){
-                                countexe=1;
+                            if(countexe++==120){
+                                countexe=1;       
+                            }
+                             if(count==60){
                                 cubeElement.stored=false;
                                 cubeElement.cube.position.x=Math.round(cubeElement.cube.position.x);
                                 cubeElement.cube.position.y=Math.round(cubeElement.cube.position.y);
-                            }
-                             if(count==60){
-                                cubeElement.cube.position.x=Math.round(cubeElement.cube.position.x);
-                                cubeElement.cube.position.y=Math.round(cubeElement.cube.position.y);
-                                console.log(cubeElement.cube.position.y);
+                                //cubeElement.cube.position.z=Math.round(cubeElement.cube.position.z);
+                                console.log("count"+cubeElement.cube.position.y);
+                                 if(resetCount++==2){
+                                    count=0;
+                                    resetCount=1;
+                                    
+                                }
                             }
                             console.log("Z"+countexe);
                             console.log("x "+cubeElement.cube.position.x+" y "+cubeElement.cube.position.y+" z "+cubeElement.cube.position.z);

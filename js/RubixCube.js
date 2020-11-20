@@ -249,7 +249,7 @@ function main() {
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
             prevWidth = canvas.width;
             prevHeight = canvas.height; //store prev value to compare
-            //renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+            renderer.setSize(window.innerWidth, window.innerHeight); //change render size
             //renderer.setClearColor(0xffffff);
             // setting camera aspect to prevent view from crushing
             camera.aspect = canvas.width / canvas.height;
@@ -285,10 +285,24 @@ function main() {
                     const check = new THREE.Mesh(boxGeometry, boxmaterials);
 
 */
+                    /*const boxmaterials = new THREE.MeshBasicMaterial({});
+                    const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
+                    const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
+                    cubeGroup[i + 1][j + 1].push(cube);
+                    cube.position.x = i;
+                    cube.position.y = j;
+                    cube.position.z = k;
+                    const initPosition = { x: i, y: j, z: k };
+                    const angle = { x: 0, y: 0, z: 0 };
+                    const storePosition={x: 0, y:0,z:0,stored:false};
+                    cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition,storePosition, angle };
+                    console.log(cube);*/
+                    
+                    if((i!=-1)&&j==1&&k==1){
                     const boxmaterials = new THREE.MeshBasicMaterial({});
                     const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
                     const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                    //cubeGroup[i + 1][j + 1].push(cube);
+                   // cubeGroup[i + 1][j + 1].push(cube);
                     cube.position.x = i;
                     cube.position.y = j;
                     cube.position.z = k;
@@ -297,7 +311,8 @@ function main() {
                     const storePosition={x: 0, y:0,z:0,stored:false};
                     cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition,storePosition, angle };
                     console.log(cube);
-                    if(j==1&&k==1&&(i!=-1))scene.add(cube);
+                    scene.add(cube);
+                }
                 }
             }
         }
