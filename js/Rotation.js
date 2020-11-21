@@ -7,7 +7,7 @@ quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);*/
 /*let countexe = 0;*/
 let count = 0;
 let resetCount = 1;
-const rotXmatrix = math.matrix([
+/*const rotXmatrix = math.matrix([
     [1, 0, 0],
     [0, 0, -1],
     [0, 1, 0]
@@ -21,7 +21,7 @@ const rotZmatrix = math.matrix([
     [0, 1, 0],
     [-1, 0, 0],
     [0, 0, 1]
-]);
+]);*/
 
 export const RotateAxis = (cubeGroup, axisName, value) => {
     count++;
@@ -38,9 +38,9 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.storePosition.z = cubeElement.cube.position.z;
                                 cubeElement.storePosition.y = cubeElement.cube.position.y;
                                 cubeElement.stored = true;
-                                cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 0)) +
+                                /*cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 0)) +
                                     +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 1)) * 2 +
-                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 2)) * 4;
+                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 2)) * 4;*/
                             }
 
                             cubeElement.angle.x += Math.PI / 120;
@@ -60,8 +60,8 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.cube.position.y = Math.round(cubeElement.cube.position.y);
                                 cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
 
-                                cubeElement.rotAxisZMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisZMatrix);
-                                cubeElement.rotAxisYMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisYMatrix);
+                                /*cubeElement.rotAxisZMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisZMatrix);
+                                cubeElement.rotAxisYMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisYMatrix);*/
 
                                 cubeElement.angle.x = 0;
                                 pivot.rotation.set(0, 0, 0);
@@ -90,9 +90,9 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.storePosition.x = cubeElement.cube.position.x;
                                 cubeElement.storePosition.z = cubeElement.cube.position.z;
                                 cubeElement.stored = true;
-                                cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisYMatrix).subset(math.index(1, 0)) +
+                               /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisYMatrix).subset(math.index(1, 0)) +
                                     +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 1)) * 2 +
-                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 2)) * 4;
+                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 2)) * 4;*/
 
                             }
 
@@ -137,7 +137,7 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
                                 cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
 
-                                cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);
+                              /*  cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);*/
                             
                                 cubeElement.angle.y = 0;
                                 pivot.rotation.set(0, 0, 0);
@@ -165,9 +165,9 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.storePosition.y = cubeElement.cube.position.y;
                                 cubeElement.storePosition.x = cubeElement.cube.position.x;
                                 cubeElement.stored = true;
-                                cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 0)) +
+                               /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 0)) +
                                     +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 1)) * 2 +
-                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 2)) * 4;
+                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 2)) * 4;*/
                             }
                             cubeElement.angle.z += Math.PI / 120;
                             cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) * cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) * cubeElement.storePosition.x;

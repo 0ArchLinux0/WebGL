@@ -147,22 +147,22 @@ let renderRequested = false;
                     R.RotateAxis(cubeGroup, "X", -1);
                     break;
                 case 1:
-                    R.RotateAxis(cubeGroup, "Y", 1);
+                    R.RotateAxis(cubeGroup, "Y", 0);
                     break;
                 case 2:
-                    R.RotateAxis(cubeGroup, "Z", 0);
+                    R.RotateAxis(cubeGroup, "Z", 1);
                     break;
                 case 0:
-                    R.RotateAxis(cubeGroup, "X", 1);
+                    R.RotateAxis(cubeGroup, "X", 0);
                     break;
                 case 4:
-                    R.RotateAxis(cubeGroup, "X", 1);
+                    R.RotateAxis(cubeGroup, "X", -1);
                     break;
                 case 5:
                     R.RotateAxis(cubeGroup, "Y", 1);
                     break;
                 default:
-                    R.RotateAxis(cubeGroup, "Z", 1);
+                    R.RotateAxis(cubeGroup, "Z", -1);
                     break;
             }
             
