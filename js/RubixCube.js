@@ -18,6 +18,10 @@ function main() {
     controls.target.set(0, 0, 0);
     controls.update();
 
+    let isDrag=false;
+    let isDown=false;
+    let isTouchMove=false;
+
     const renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
     renderer.setClearColor(0xdee2e6);
@@ -120,7 +124,7 @@ let renderRequested = false;
     let isRunning = false;
     let ran_num=0;
     function requestRenderClick() {
-        console.log(!isRunning+" click "+countClick+" ran: "+ran_num);
+        //console.log(!isRunning+" click "+countClick+" ran: "+ran_num);
             countClick++;
         if (!isRunning) {
             isRunning = true;
@@ -180,14 +184,59 @@ let renderRequested = false;
             requestAnimationFrame(animate);
          
         }
+        //########  Desktop 
+        function onDown(){
+            isDown=true;
+            console.log("ondown isdown: "+isDown);
+        }
+        function onUp(){
+            console.log("on up");
+            console.log(isDrag);
+            isDown=false;
+            if(isDrag){
+                isDrag=false;
+                console.log("is drag");
+                return;
+            }
+            else requestRenderClick();
+        }
+
+
+        function onMouseMove(){
+            console.log("onmouse MOve!!!");
+            if(isDown){
+                isDrag=true;
+                requestRender();
+                console.log("isDrag in is Donw "+isDrag);
+            }
+            return ;
+        }
+        //######
+
+        //#####  Mobile
+        function onTouchMove(){
+            isTouchMove=true;
+            requestRender();
+        }
+
+        function onTouchEnd(){
+            if(isTouchMove){
+                isTouchMove=false;
+                return;
+            }
+            requestRenderClick();
+        }
+        //######
 
 
 
         controls.addEventListener('change', requestRender, false); //called first at initializing
-        window.addEventListener('click', requestRenderClick, false);
+        window.addEventListener('pointerup', onUp, false);
+        window.addEventListener('pointerdown', onDown, false);
+        window.addEventListener('pointermove', onMouseMove, false);
         window.addEventListener('resize', requestRender, false);
-        let CE_touchend=window.addEventListener('touchend', requestRenderClick, false);
-        window.addEventListener('touchmove', requestRender, false);
+        window.addEventListener('touchend', onTouchEnd, false);
+        window.addEventListener('touchmove', onTouchMove, false);
 
 
 
