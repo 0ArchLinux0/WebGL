@@ -6,6 +6,7 @@ export const scene = new THREE.Scene();
 
 function main() {
 
+    
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
     const pixelRatio = window.devicePixelRatio;
@@ -246,6 +247,9 @@ let renderRequested = false;
             }
             return ;
         }*/
+
+        //###############On mobile, touchmove and pointermove didnt't worked either 
+
         let pos_down=[];
         let pos_up=[];
         function onDown(e){
