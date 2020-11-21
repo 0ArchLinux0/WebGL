@@ -74,9 +74,9 @@ function main() {
     makeInstanceCube();
 
 
-    camera.position.x = 3;
-    camera.position.y = 3;
-    camera.position.z = 3;
+    camera.position.x = 4;
+    camera.position.y = 4;
+    camera.position.z = 4;
 
     {
         const color = 0xFFFFFF;
@@ -241,13 +241,13 @@ let renderRequested = false;
 
 
         controls.addEventListener('change', requestRender, false); //called first at initializing
-        //window.addEventListener('pointerup', onUp, false);
-        //window.addEventListener('pointerdown', onDown, false);
-       // window.addEventListener('pointermove', onMouseMove, false);
+        window.addEventListener('pointerup', onUp, false);
+        window.addEventListener('pointerdown', onDown, false);
+        window.addEventListener('pointermove', onMouseMove, false);
         window.addEventListener('resize', requestRender, false);
-        window.addEventListener('touchstart', onTouchStart, false);
-        window.addEventListener('touchmove', onTouchMove, false);
-        window.addEventListener('touchend', onTouchEnd, false);
+       // window.addEventListener('touchstart', onTouchStart, false);
+       // window.addEventListener('touchmove', onTouchMove, false);
+       // window.addEventListener('touchend', onTouchEnd, false);
 
 
 
