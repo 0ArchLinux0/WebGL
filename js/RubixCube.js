@@ -2,9 +2,9 @@ import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threej
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
 //import * as math from 'https://cdnjs.cloudflare.com/ajax/libs/mathjs/8.0.1/math.min.js';
 import * as R from './Rotation.js';
-
+export const scene = new THREE.Scene();
 function main() {
-    const scene = new THREE.Scene();
+    
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
 
     const canvas = document.querySelector('#canvas');
@@ -218,7 +218,7 @@ function main() {
     }
 
     let isInitialized = false;
-    let i = 0; 
+    let i = 0;
 
 
     function animate(time) {
@@ -229,37 +229,31 @@ function main() {
         console.log("i" + i);
 
         console.log("animate");
-        switch (countClick) {
-            case 3:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break;
+        switch (countClick%6) {
+            /* case 3:
+                 R.RotateAxis(cubeGroup, "X", 1);
+                 break;*/
             case 1:
-                R.RotateAxis(cubeGroup, "X", 1);
+                R.RotateAxis(cubeGroup, "Y", 1);
                 break;
             case 2:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break;
-            case 0:
                 R.RotateAxis(cubeGroup, "Z", 1);
                 break;
-           case 4:
+            case 0:
                 R.RotateAxis(cubeGroup, "X", 1);
                 break;
-            case 5:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break;
-             case 5:
-            R.RotateAxis(cubeGroup, "Y", 2);
-            break;
-             case 5:
-            R.RotateAxis(cubeGroup, "Y", -1);
-            break;
+                /*case 4:
+                    R.RotateAxis(cubeGroup, "X", 1);
+                    break;
+                case 5:
+                    R.RotateAxis(cubeGroup, "Y", 1);
+                    break;*/
             default:
-                R.RotateAxis(cubeGroup, "x", 1);
+                R.RotateAxis(cubeGroup, "Z", 1);
                 break;
         }
         // R.RotateAxis(cubeGroup, "Z", 1);
-       // R.RotateAxis(cubeGroup, "X", 1);
+        // R.RotateAxis(cubeGroup, "X", 1);
         requestAnimationFrame(animate);
         let time_var = time / 1000 * 30;
         if (time === undefined) { time_var = 0; }
@@ -297,7 +291,7 @@ function main() {
     controls.addEventListener('change', requestRenderIfNotRequested); //called first at initializing
     window.addEventListener('click', requestRenderIfNotRequestedClick);
     window.addEventListener('resize', requestRenderIfNotRequested);
-    window.addEventListener('touch',requestRenderIfNotRequestedClick);
+    window.addEventListener('touch', requestRenderIfNotRequestedClick);
 
 
 
@@ -321,15 +315,30 @@ function main() {
                     const initPosition = { x: i, y: j, z: k };
                     const angle = { x: 0, y: 0, z: 0 };
                     const storePosition = { x: 0, y: 0, z: 0, stored: false };
-                    const rotAxisYMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-                    const rotAxisZMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-                    const AxisDeterm=0;
-                   // console.log("ch"+changedAxisMatrix);
+                    const rotAxisYMatrix = math.matrix([
+                        [1, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 1]
+                    ]);
+                    const rotAxisZMatrix = math.matrix([
+                        [1, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 1]
+                    ]);
+                    const AxisDeterm = 0;
+                    // console.log("ch"+changedAxisMatrix);
 
-                    cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition, storePosition, angle, rotAxisYMatrix
-,rotAxisZMatrix,AxisDeterm };
+                    cubeGroup[i + 1][j + 1][k + 1] = {
+                        cube,
+                        initPosition,
+                        storePosition,
+                        angle,
+                        rotAxisYMatrix,
+                        rotAxisZMatrix,
+                        AxisDeterm
+                    };
                     console.log(cube);
-                    
+
                     scene.add(cube);
 
                     /* if(/*(i!=-1)&&j==1&&k==1){
@@ -395,9 +404,8 @@ function main() {
             }
         }*/
 
+console.log("main");
 
-    console.log("main");
-
+  
 }
-
 main();
