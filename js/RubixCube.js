@@ -1,18 +1,18 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
-//import * as math from 'https://cdnjs.cloudflare.com/ajax/libs/mathjs/8.0.1/math.min.js';
 import * as R from './Rotation.js';
+import { isMobile } from './mobile_detect.js';
 export const scene = new THREE.Scene();
-function main() {
-    
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
 
+function main() {
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const pixelRatio = window.devicePixelRatio;
+    canvas.width = window.innerWidth * pixelRatio;
+    canvas.height = window.innerHeight * pixelRatio;
     let prevWidth = canvas.width;
     let prevHeight = canvas.height;
-
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.target.set(0, 0, 0);
@@ -20,7 +20,7 @@ function main() {
 
     const renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
-    //differrent to canvas size setting in css
+    renderer.setClearColor(0xdee2e6);
     document.body.appendChild(renderer.domElement);
 
     const COLOR_DIRECTIONS = {
@@ -67,30 +67,12 @@ function main() {
         ]
     ]; //Better look than initializeing with for loop
 
-    const cubeGroupCopy = [
-        [
-            [],
-            [],
-            [],
-        ],
-        [
-            [],
-            [],
-            []
-        ],
-        [
-            [],
-            [],
-            []
-        ]
-    ];
-
     makeInstanceCube();
 
 
-    camera.position.x = 4;
-    camera.position.y = 4;
-    camera.position.z = 4;
+    camera.position.x = 3;
+    camera.position.y = 3;
+    camera.position.z = 3;
 
     {
         const color = 0xFFFFFF;
@@ -104,52 +86,10 @@ function main() {
 
     }
 
-    /*const yAxis = new THREE.Vector3(0, 1, 0);
-    const RotateAxisY = () => {
-        /*let count=0;*/
-    /* cubeGroup.forEach((cubeinPlane) => {
-         cubeinPlane.forEach((cubeinLine) => {
-             cubeinLine.forEach((cubeElement) => {
-                 if (cubeElement.cube.position.y == 1) {
-                     cubeElement.angle.y += Math.PI / 120;
-                     cubeElement.cube.position.x = Math.cos(cubeElement.angle.y) * cubeElement.initPosition.x - Math.sin(cubeElement.angle.y) * cubeElement.initPosition.z;
-                     cubeElement.cube.position.z = Math.sin(cubeElement.angle.y) * cubeElement.initPosition.x + Math.cos(cubeElement.angle.y) * cubeElement.initPosition.z;
-                     cubeElement.cube.rotation.y = -cubeElement.angle.y;
-                 }
+let renderRequested = false;
 
-                 scene.add(cubeElement.cube);
-             })
-         });
-
-     });*/
-    /*RotateAxisY();
-           if(count>3)*/
-    //}//Rotation
-
-
-    let renderRequested = false;
-    //scene.add(testcube);
-    let prev_time = 0;
-    let clock = new THREE.Clock(true);
-
-    const pause = () => {
-        clock.start();
-        const start_time = clock.startime;
-        while (clock.getElapsedTime() < 5000) {}
-        return;
-    } //clock
-
-    function render(time) {
-        console.log("render");
-        let time_var = time / 1000 * 30;
-        if (time === undefined) { time_var = 0; }
-        renderRequested = undefined;
-        // pause(time); 왜 멈추지 대체
-        const pixelRatio = window.devicePixelRatio;
-        //console.log(pixelRatio); //my pc:1
-        canvas.width = window.innerWidth * pixelRatio;
-        canvas.height = window.innerHeight * pixelRatio;
-        if ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+    function render() {
+        if ((!isMobile) && ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth))) { //size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
             prevWidth = canvas.width;
@@ -160,20 +100,14 @@ function main() {
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
         }
-        // R.RotateAxis(cubeGroup,"Y",1);
-        //console.log(prev_time + " " + time);
         controls.update();
         renderer.render(scene, camera);
-        if (time - prev_time > 5000) {
-            prev_time = time;
-        }
-
+        renderRequested = undefined;
     }
 
     render();
 
-
-    function requestRenderIfNotRequested() {
+    function requestRender() {
 
         if (!renderRequested) {
             renderRequested = true;
@@ -181,227 +115,124 @@ function main() {
         }
 
     }
-    let countClick = -1;
 
-    function requestRenderIfNotRequestedClick() {
-        countClick++;
-        requestAnimationFrame(animate);
-
-        //  console.log(time);
-        //
-        // console.log("rq:"+renderRequested);
-        /* if (!renderRequested) {*/
-        /* while (1) {                                                  // ###########render() executed after the fucntion ends... didn't work
-             pause();    
-             if (runCount++ > 60) { return; }
-             renderRequested = false;
-             render();
-             // requestAnimationFrame(requestRend);
-             //  console.log("click");                 
-             console.log(runCount);
-         }*/
-
-        //}
-        /*  if (!renderRequested) {
-              renderRequested = true;
-              requestAnimationFrame(render);
-              // console.log("click"); 
-              requestAnimationFrame(render);
-              requestAnimationFrame(render);
-              requestAnimationFrame(render);
-
-              requestAnimationFrame(render);requestAnimationFrame(render);
-
-
-
-              console.log(runCount);
-          }*/
+    let countClick = 0;
+    let isRunning = false;
+    let ran_num=0;
+    function requestRenderClick() {
+        console.log(!isRunning+" click "+countClick+" ran: "+ran_num);
+            countClick++;
+        if (!isRunning) {
+            isRunning = true;
+            console.log("run loop");
+            requestAnimationFrame(animate);
+        }
     }
 
-    let isInitialized = false;
-    let i = 0;
+        let i = 0;
 
+        function animate(time) {
 
-    function animate(time) {
-        if (i++ == 60) {
-            i = 0;
-            return;
-        }
-        console.log("i" + i);
-
-        console.log("animate");
-        switch (countClick%6) {
-             case 3:
-                 R.RotateAxis(cubeGroup, "X", -1);
-                 break;
-            case 1:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break;
-            case 2:
-                R.RotateAxis(cubeGroup, "Z", 0);
-                break;
-            case 0:
-                R.RotateAxis(cubeGroup, "X", 1);
-                break;
+            if (i++ == 60) {
+                i = 0;
+                ran_num=parseInt(Math.random()*5+1);
+                isRunning = undefined;
+                return;
+            }
+            switch (ran_num) {
+                case 3:
+                    R.RotateAxis(cubeGroup, "X", -1);
+                    break;
+                case 1:
+                    R.RotateAxis(cubeGroup, "Y", 1);
+                    break;
+                case 2:
+                    R.RotateAxis(cubeGroup, "Z", 0);
+                    break;
+                case 0:
+                    R.RotateAxis(cubeGroup, "X", 1);
+                    break;
                 case 4:
                     R.RotateAxis(cubeGroup, "X", 1);
                     break;
                 case 5:
                     R.RotateAxis(cubeGroup, "Y", 1);
                     break;
-            default:
-                R.RotateAxis(cubeGroup, "Z", 1);
-                break;
-        }
-        requestAnimationFrame(animate);
-        let time_var = time / 1000 * 30;
-        if (time === undefined) { time_var = 0; }
-        renderRequested = undefined;
-        // pause(time); 왜 멈추지 대체
-        const pixelRatio = window.devicePixelRatio;
-        //console.log(pixelRatio); //my pc:1
-        canvas.width = window.innerWidth * pixelRatio;
-        canvas.height = window.innerHeight * pixelRatio;
-        if ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
-            canvas.width = window.innerWidth * pixelRatio;
-            canvas.height = window.innerHeight * pixelRatio; //change canvas size
-            prevWidth = canvas.width;
-            prevHeight = canvas.height; //store prev value to compare
-            renderer.setSize(window.innerWidth, window.innerHeight); //change render size
-            //renderer.setClearColor(0xffffff);
-            // setting camera aspect to prevent view from crushing
-            camera.aspect = canvas.width / canvas.height;
-            camera.updateProjectionMatrix();
-        }
-        controls.update();
-        renderer.render(scene, camera);
-        if (time - prev_time > 5000) {
-            prev_time = time;
+                default:
+                    R.RotateAxis(cubeGroup, "Z", 1);
+                    break;
+            }
+            
+            // pause(time); 왜 멈추지 대체
+        
+            if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+                canvas.width = window.innerWidth * pixelRatio;
+                canvas.height = window.innerHeight * pixelRatio; //change canvas size
+                prevWidth = canvas.width;
+                prevHeight = canvas.height; //store prev value to compare
+                renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+                // setting camera aspect to prevent view from crushing
+                camera.aspect = canvas.width / canvas.height;
+                camera.updateProjectionMatrix();
+            }
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+         
         }
 
-    }
+
+
+        controls.addEventListener('change', requestRender, false); //called first at initializing
+        window.addEventListener('click', requestRenderClick, false);
+        window.addEventListener('resize', requestRender, false);
+        window.addEventListener('touchend', requestRenderClick, false);
+        window.addEventListener('touchmove', requestRenderClick, false);
 
 
 
-    controls.addEventListener('change', requestRenderIfNotRequested); //called first at initializing
-    window.addEventListener('click', requestRenderIfNotRequestedClick);
-    window.addEventListener('resize', requestRenderIfNotRequested);
-    window.addEventListener('touchend', requestRenderIfNotRequestedClick);
-    window.addEventListener('touchmove', requestRenderIfNotRequestedClick);
+        function makeInstanceCube() {
+            const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+            for (let i = -1; i < 2; i++) {
+                for (let j = -1; j < 2; j++) {
+                    for (let k = -1; k < 2; k++) {
 
+                        const boxmaterials = new THREE.MeshBasicMaterial({});
+                        const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
+                        const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
+                        cubeGroup[i + 1][j + 1].push(cube);
+                        cube.position.x = i;
+                        cube.position.y = j;
+                        cube.position.z = k;
+                        const initPosition = { x: i, y: j, z: k };
+                        const angle = { x: 0, y: 0, z: 0 };
+                        const storePosition = { x: 0, y: 0, z: 0, stored: false };
+                        const rotAxisYMatrix = math.matrix([
+                            [1, 0, 0],
+                            [0, 1, 0],
+                            [0, 0, 1]
+                        ]);
+                        const rotAxisZMatrix = math.matrix([
+                            [1, 0, 0],
+                            [0, 1, 0],
+                            [0, 0, 1]
+                        ]);
+                        const AxisDeterm = 0;
 
+                        cubeGroup[i + 1][j + 1][k + 1] = {
+                            cube,
+                            initPosition,
+                            storePosition,
+                            angle,
+                            rotAxisYMatrix,
+                            rotAxisZMatrix,
+                            AxisDeterm
+                        };
+                        scene.add(cube);
 
-    function makeInstanceCube() {
-        const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-        for (let i = -1; i < 2; i++) {
-            for (let j = -1; j < 2; j++) {
-                for (let k = -1; k < 2; k++) {
-                    /*const boxGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-                    const boxmaterials = new THREE.MeshBasicMaterial({ color: "blue" });
-                    const check = new THREE.Mesh(boxGeometry, boxmaterials);
-
-*/
-                    const boxmaterials = new THREE.MeshBasicMaterial({});
-                    const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
-                    const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                    cubeGroup[i + 1][j + 1].push(cube);
-                    cube.position.x = i;
-                    cube.position.y = j;
-                    cube.position.z = k;
-                    const initPosition = { x: i, y: j, z: k };
-                    const angle = { x: 0, y: 0, z: 0 };
-                    const storePosition = { x: 0, y: 0, z: 0, stored: false };
-                    const rotAxisYMatrix = math.matrix([
-                        [1, 0, 0],
-                        [0, 1, 0],
-                        [0, 0, 1]
-                    ]);
-                    const rotAxisZMatrix = math.matrix([
-                        [1, 0, 0],
-                        [0, 1, 0],
-                        [0, 0, 1]
-                    ]);
-                    const AxisDeterm = 0;
-                    // console.log("ch"+changedAxisMatrix);
-
-                    cubeGroup[i + 1][j + 1][k + 1] = {
-                        cube,
-                        initPosition,
-                        storePosition,
-                        angle,
-                        rotAxisYMatrix,
-                        rotAxisZMatrix,
-                        AxisDeterm
-                    };
-                    console.log(cube);
-
-                    scene.add(cube);
-
-                    /* if(/*(i!=-1)&&j==1&&k==1){
-                     const boxmaterials = new THREE.MeshBasicMaterial({});
-                     const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
-                     const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                    // cubeGroup[i + 1][j + 1].push(cube);
-                     cube.position.x = i;
-                     cube.position.y = j;
-                     cube.position.z = k;
-                     const initPosition = { x: i, y: j, z: k };
-                     const angle = { x: 0, y: 0, z: 0 };
-                     const rotate={ x:0, y:0,z:0};
-                     const storePosition={x: 0, y:0,z:0,stored:false};
-                     cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition,storePosition, angle };
-                     console.log(cube);
-                     scene.add(cube); //이대로 이거 하나 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ*/
+                    }
                 }
             }
         }
     }
-
-    /*   function CubeUpdate(Cube,axis,index) {
-       const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-       for (let i = -1; i < 2; i++) {
-           for (let j = -1; j < 2; j++) {
-               for (let k = -1; k < 2; k++) 
-
-
-                    const boxmaterials = new THREE.MeshBasicMaterial({});
-
-                   const prev_cubeMaterialColors
-                   const cubeMaterialColors = UpdateMaterialColors(i, j, k, boxmaterials);
-                   const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                   cubeGroup[i + 1][j + 1].push(cube);
-                   cube.position.x = i;
-                   cube.position.y = j;
-                   cube.position.z = k;
-                   const initPosition = { x: i, y: j, z: k };
-                   const angle = { x: 0, y: 0, z: 0 };
-                   const storePosition={x: 0, y:0,z:0,stored:false};
-                   cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition,storePosition, angle };
-                   console.log(cube);
-                   scene.add(cube);
-                   
-                  /* if(/*(i!=-1)&&j==1&&k==1){
-                   const boxmaterials = new THREE.MeshBasicMaterial({});
-                   const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
-                   const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                  // cubeGroup[i + 1][j + 1].push(cube);
-                   cube.position.x = i;
-                   cube.position.y = j;
-                   cube.position.z = k;
-                   const initPosition = { x: i, y: j, z: k };
-                   const angle = { x: 0, y: 0, z: 0 };
-                   const rotate={ x:0, y:0,z:0};
-                   const storePosition={x: 0, y:0,z:0,stored:false};
-                   cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition,storePosition, angle };
-                   console.log(cube);
-                   scene.add(cube); //이대로 이거 하나 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ*/
-    /* }
-                }
-            }
-        }*/
-
-console.log("main");
-
-  
-}
-main();
+    main();
