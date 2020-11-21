@@ -14,7 +14,7 @@ function main() {
     let prevWidth = canvas.width;
     let prevHeight = canvas.height;
     const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
+    controls.enableDamping = false; //rotate as if it has a inertia
     controls.target.set(0, 0, 0);
     controls.update();
 
@@ -128,7 +128,6 @@ let renderRequested = false;
             countClick++;
         if (!isRunning) {
             isRunning = true;
-            console.log("run loop");
             requestAnimationFrame(animate);
         }
     }
@@ -215,11 +214,13 @@ let renderRequested = false;
 
         //#####  Mobile
         function onTouchMove(){
+            console.log("onTouchMove");
             isTouchMove=true;
             requestRender();
         }
 
         function onTouchEnd(){
+            console.log("onTouchEnd");
             if(isTouchMove){
                 isTouchMove=false;
                 return;
@@ -235,7 +236,7 @@ let renderRequested = false;
         window.addEventListener('pointerdown', onDown, false);
         window.addEventListener('pointermove', onMouseMove, false);
         window.addEventListener('resize', requestRender, false);
-        window.addEventListener('touchend', onTouchEnd, false);
+        //window.addEventListener('touchend', onTouchEnd, false);
         window.addEventListener('touchmove', onTouchMove, false);
 
 

@@ -209,5 +209,4 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
 
 let pivot = new THREE.Object3D();
 pivot.rotation.set(0, 0, 0);
-//pivot.updateMatrixWorld();
 
