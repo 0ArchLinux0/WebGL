@@ -213,9 +213,18 @@ let renderRequested = false;
         //######
 
         //#####  Mobile
+        function onTouchStart(){
+            console.log("onTouchstart");
+          
+                isDown=true;
+             
+        }
+
         function onTouchMove(){
             console.log("onTouchMove");
+            if(isDown){
             isTouchMove=true;
+            }
             requestRender();
         }
 
@@ -232,12 +241,13 @@ let renderRequested = false;
 
 
         controls.addEventListener('change', requestRender, false); //called first at initializing
-        window.addEventListener('pointerup', onUp, false);
-        window.addEventListener('pointerdown', onDown, false);
-        window.addEventListener('pointermove', onMouseMove, false);
+        //window.addEventListener('pointerup', onUp, false);
+        //window.addEventListener('pointerdown', onDown, false);
+       // window.addEventListener('pointermove', onMouseMove, false);
         window.addEventListener('resize', requestRender, false);
-        //window.addEventListener('touchend', onTouchEnd, false);
+        window.addEventListener('touchstart', onTouchStart, false);
         window.addEventListener('touchmove', onTouchMove, false);
+        window.addEventListener('touchend', onTouchEnd, false);
 
 
 
