@@ -6,6 +6,7 @@ export const scene = new THREE.Scene();
 
 function main() {
 
+    const  SHUFFLE_TIME=5;
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
@@ -130,14 +131,13 @@ function main() {
         countClick++;
         if (!isRunning) {
             isRunning = true;
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animate_shuffle);
         }
     }
 
     let i = 0;
     let arg1 = String.fromCharCode(88 + ran_num);
     let arg2 = 0;
-    console.log(": " + arg1 + " : " + arg2);
 
     function animate(time) {
 
@@ -148,48 +148,10 @@ function main() {
             arg1 = String.fromCharCode(88 + ran_num);
             // console.log("ran"+(parseInt(Math.random()*100)%3-1));
             arg2 = (parseInt(Math.random() * 100) % 3 - 1);
-            console.log("arg1: "+arg1);
-            console.log("arg2: " + arg2);
-
             return;
         }
-
 
         R.RotateAxis(cubeGroup, arg1, arg2);
-
-        /*function animate(time) {
-
-        if (i++ == 60) {
-            i = 0;
-            ran_num=parseInt(Math.random()*5+1);
-            isRunning = undefined;
-            return;
-        }
-        switch (ran_num) {
-            case 3:
-                R.RotateAxis(cubeGroup, "X", -1);
-                break;
-            case 1:
-                R.RotateAxis(cubeGroup, "Y", 0);
-                break;
-            case 2:
-                R.RotateAxis(cubeGroup, "Z", 1);
-                break;
-            case 0:
-                R.RotateAxis(cubeGroup, "X", 0);
-                break;
-            case 4:
-                R.RotateAxis(cubeGroup, "X", -1);
-                break;
-            case 5:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break;
-            default:
-                R.RotateAxis(cubeGroup, "Z", -1);
-                break;
-        }*/
-
-        // pause(time); 왜 멈추지 대체
 
         if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
             canvas.width = window.innerWidth * pixelRatio;
@@ -204,6 +166,42 @@ function main() {
         controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
+
+    }
+    let exeCount=0;
+
+    function animate_shuffle(time) {
+
+        if (i++ == 60) {
+            i = 1;
+            ran_num = parseInt(Math.random() * 3 - 0.1);
+            isRunning = undefined;
+            exeCount++;
+            arg1 = String.fromCharCode(88 + ran_num);
+            // console.log("ran"+(parseInt(Math.random()*100)%3-1));
+            arg2 = (parseInt(Math.random() * 100) % 3 - 1);
+        }
+        if(exeCount==SHUFFLE_TIME){
+            exeCount=0;
+            i=0;
+            return;
+        }
+
+        R.RotateAxis(cubeGroup, arg1, arg2);
+
+        if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+            canvas.width = window.innerWidth * pixelRatio;
+            canvas.height = window.innerHeight * pixelRatio; //change canvas size
+            prevWidth = canvas.width;
+            prevHeight = canvas.height; //store prev value to compare
+            renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+            // setting camera aspect to prevent view from crushing
+            camera.aspect = canvas.width / canvas.height;
+            camera.updateProjectionMatrix();
+        }
+        controls.update();
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate_shuffle);
 
     }
     //########  Desktop 
@@ -244,23 +242,18 @@ function main() {
     let pos_up = [];
 
     function onDown(e) {
-        console.log("e:" + e.pageX);
         pos_down[0] = e.pageX;
         pos_down[1] = e.pageY;
         isDown = true;
     }
 
     function onUp(e) {
-        console.log("e:" + e.pageX);
-        console.log("on up");
         pos_up[0] = e.pageX;
         pos_up[1] = e.pageY;
         isDown = false;
         const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
-        console.log("val" + v);
         if ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 40) {
             isDrag = false;
-            console.log("is drag");
             return;
         } else requestRenderClick();
     }
