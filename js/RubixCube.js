@@ -186,8 +186,8 @@ let renderRequested = false;
         controls.addEventListener('change', requestRender, false); //called first at initializing
         window.addEventListener('click', requestRenderClick, false);
         window.addEventListener('resize', requestRender, false);
-        window.addEventListener('touchend', requestRenderClick, false);
-        window.addEventListener('touchmove', requestRenderClick, false);
+        let CE_touchend=window.addEventListener('touchend', requestRenderClick, false);
+        window.addEventListener('touchmove', requestRender, false);
 
 
 
