@@ -186,6 +186,7 @@ function main() {
     function requestRenderIfNotRequestedClick() {
         countClick++;
         requestAnimationFrame(animate);
+
         //  console.log(time);
         //
         // console.log("rq:"+renderRequested);
@@ -230,30 +231,28 @@ function main() {
 
         console.log("animate");
         switch (countClick%6) {
-            /* case 3:
-                 R.RotateAxis(cubeGroup, "X", 1);
-                 break;*/
+             case 3:
+                 R.RotateAxis(cubeGroup, "X", -1);
+                 break;
             case 1:
                 R.RotateAxis(cubeGroup, "Y", 1);
                 break;
             case 2:
-                R.RotateAxis(cubeGroup, "Z", 1);
+                R.RotateAxis(cubeGroup, "Z", 0);
                 break;
             case 0:
                 R.RotateAxis(cubeGroup, "X", 1);
                 break;
-                /*case 4:
+                case 4:
                     R.RotateAxis(cubeGroup, "X", 1);
                     break;
                 case 5:
                     R.RotateAxis(cubeGroup, "Y", 1);
-                    break;*/
+                    break;
             default:
                 R.RotateAxis(cubeGroup, "Z", 1);
                 break;
         }
-        // R.RotateAxis(cubeGroup, "Z", 1);
-        // R.RotateAxis(cubeGroup, "X", 1);
         requestAnimationFrame(animate);
         let time_var = time / 1000 * 30;
         if (time === undefined) { time_var = 0; }
@@ -274,10 +273,6 @@ function main() {
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
         }
-
-
-
-        //console.log(prev_time + " " + time);
         controls.update();
         renderer.render(scene, camera);
         if (time - prev_time > 5000) {
@@ -291,7 +286,8 @@ function main() {
     controls.addEventListener('change', requestRenderIfNotRequested); //called first at initializing
     window.addEventListener('click', requestRenderIfNotRequestedClick);
     window.addEventListener('resize', requestRenderIfNotRequested);
-    window.addEventListener('touch', requestRenderIfNotRequestedClick);
+    window.addEventListener('touchend', requestRenderIfNotRequestedClick);
+    window.addEventListener('touchmove', requestRenderIfNotRequestedClick);
 
 
 
