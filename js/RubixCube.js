@@ -218,16 +218,10 @@ function main() {
     }
 
     let isInitialized = false;
-    let i = 0; // 왜 0이 아님???????????????????????????이것때문에 몇기삭ㄴ으 ㄹ나렸나 ㅅㅂ
+    let i = 0; 
 
 
     function animate(time) {
-        /* if(countClick%4==0){
-             countClick++;
-             console.log(countClick);
-             R.adjust(cubeGroup,"Y",1);
-             return 1;
-         }*/
         if (i++ == 60) {
             i = 0;
             return;
@@ -237,29 +231,35 @@ function main() {
         console.log("animate");
         switch (countClick) {
             case 3:
-                R.RotateAxis(cubeGroup, "Y", -1);
+                R.RotateAxis(cubeGroup, "Y", 1);
                 break;
             case 1:
-                R.RotateAxis(cubeGroup, "Y", 1);
+                R.RotateAxis(cubeGroup, "X", 1);
                 break;
             case 2:
-                R.RotateAxis(cubeGroup, "X", 1);
+                R.RotateAxis(cubeGroup, "Y", 1);
                 break;
             case 0:
-                R.RotateAxis(cubeGroup, "X", 1);
+                R.RotateAxis(cubeGroup, "Z", 1);
                 break;
-            case 4:
-                R.RotateAxis(cubeGroup, "Y", 1);
+           case 4:
+                R.RotateAxis(cubeGroup, "X", 1);
                 break;
             case 5:
                 R.RotateAxis(cubeGroup, "Y", 1);
                 break;
+             case 5:
+            R.RotateAxis(cubeGroup, "Y", 2);
+            break;
+             case 5:
+            R.RotateAxis(cubeGroup, "Y", -1);
+            break;
             default:
-                R.RotateAxis(cubeGroup, "Y", 1);
-                break
+                R.RotateAxis(cubeGroup, "x", 1);
+                break;
         }
         // R.RotateAxis(cubeGroup, "Z", 1);
-        //R.RotateAxis(cubeGroup, "X", 1);
+       // R.RotateAxis(cubeGroup, "X", 1);
         requestAnimationFrame(animate);
         let time_var = time / 1000 * 30;
         if (time === undefined) { time_var = 0; }
@@ -297,7 +297,7 @@ function main() {
     controls.addEventListener('change', requestRenderIfNotRequested); //called first at initializing
     window.addEventListener('click', requestRenderIfNotRequestedClick);
     window.addEventListener('resize', requestRenderIfNotRequested);
-    window.addEvnetListener('touch',requestRenderIfNotRequestedClick);
+    window.addEventListener('touch',requestRenderIfNotRequestedClick);
 
 
 
@@ -321,11 +321,15 @@ function main() {
                     const initPosition = { x: i, y: j, z: k };
                     const angle = { x: 0, y: 0, z: 0 };
                     const storePosition = { x: 0, y: 0, z: 0, stored: false };
-                    const changedAxisMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+                    const rotAxisYMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+                    const rotAxisZMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
                     const AxisDeterm=0;
-                    console.log("ch"+changedAxisMatrix);
-                    cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition, storePosition, angle, changedAxisMatrix,AxisDeterm };
+                   // console.log("ch"+changedAxisMatrix);
+
+                    cubeGroup[i + 1][j + 1][k + 1] = { cube, initPosition, storePosition, angle, rotAxisYMatrix
+,rotAxisZMatrix,AxisDeterm };
                     console.log(cube);
+                    
                     scene.add(cube);
 
                     /* if(/*(i!=-1)&&j==1&&k==1){
