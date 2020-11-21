@@ -92,7 +92,7 @@ function main() {
 
 let renderRequested = false;
 
-    function render() {
+    function render(time) {
         if ((!isMobile) && ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth))) { //size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
@@ -165,6 +165,38 @@ let renderRequested = false;
                     R.RotateAxis(cubeGroup, "Z", -1);
                     break;
             }
+
+            /*function animate(time) {
+
+            if (i++ == 60) {
+                i = 0;
+                ran_num=parseInt(Math.random()*5+1);
+                isRunning = undefined;
+                return;
+            }
+            switch (ran_num) {
+                case 3:
+                    R.RotateAxis(cubeGroup, "X", -1);
+                    break;
+                case 1:
+                    R.RotateAxis(cubeGroup, "Y", 0);
+                    break;
+                case 2:
+                    R.RotateAxis(cubeGroup, "Z", 1);
+                    break;
+                case 0:
+                    R.RotateAxis(cubeGroup, "X", 0);
+                    break;
+                case 4:
+                    R.RotateAxis(cubeGroup, "X", -1);
+                    break;
+                case 5:
+                    R.RotateAxis(cubeGroup, "Y", 1);
+                    break;
+                default:
+                    R.RotateAxis(cubeGroup, "Z", -1);
+                    break;
+            }*/
             
             // pause(time); 왜 멈추지 대체
         
@@ -184,24 +216,28 @@ let renderRequested = false;
          
         }
         //########  Desktop 
-        function onDown(){
+
+        /*function onDown(){
             isDown=true;
+            setTimeout(()=>{
+                isDown=false;
+            },250);
             console.log("ondown isdown: "+isDown);
         }
         function onUp(){
             console.log("on up");
-            console.log(isDrag);
-            isDown=false;
-            if(isDrag){
-                isDrag=false;
+            console.log(isDown);
+           
+            if(isDown) requestRenderClick()
+            else{
                 console.log("is drag");
                 return;
-            }
-            else requestRenderClick();
-        }
+            } 
+            
+        }*/
 
 
-        function onMouseMove(){
+      /*  function onMouseMove(){
             console.log("onmouse MOve!!!");
             if(isDown){
                 isDrag=true;
@@ -209,18 +245,51 @@ let renderRequested = false;
                 console.log("isDrag in is Donw "+isDrag);
             }
             return ;
+        }*/
+        let pos_down=[];
+        let pos_up=[];
+        function onDown(e){
+            console.log("e:"+e.pageX);
+            pos_down[0]=e.pageX;
+            pos_down[1]=e.pageY;
+            isDown=true;
         }
+        function onUp(e){
+            console.log("e:"+e.pageX);
+            console.log("on up");
+            pos_up[0]=e.pageX;
+            pos_up[1]=e.pageY;
+            isDown=false;
+            const v=Math.abs(pos_up[0]-pos_down[0])+Math.abs(pos_up[1]-pos_down[1]);
+            console.log("val"+v);
+            if((Math.abs(pos_up[0]-pos_down[0])+Math.abs(pos_up[1]-pos_down[1]))>40){
+                isDrag=false;
+                console.log("is drag");
+                return;
+            }
+            else requestRenderClick();
+        }
+        /*function onMouseMove(){
+            console.log("onmouse MOve!!!");
+            if(isDown){
+                isDrag=true;
+                requestRender();
+                console.log("isDrag in is Donw "+isDrag);
+            }
+            return ;
+        }*/
         //######
 
         //#####  Mobile
-        function onTouchStart(){
+    /*    function onTouchStart(){
             console.log("onTouchstart");
           
                 isDown=true;
              
         }
 
-        function onTouchMove(){
+        function onTouchMove(e){
+             e.preventDefault();
             console.log("onTouchMove");
             if(isDown){
             isTouchMove=true;
@@ -235,15 +304,18 @@ let renderRequested = false;
                 return;
             }
             requestRenderClick();
-        }
+        }*/
         //######
 
+/*THREE.EventDispatcher.call( cubeGroup );
+cubeGroup.addEventListener('pointerdown',onDown, false);*/
+//spinner_obj.dispatchEvent({type:'start'});
 
 
         controls.addEventListener('change', requestRender, false); //called first at initializing
         window.addEventListener('pointerup', onUp, false);
         window.addEventListener('pointerdown', onDown, false);
-        window.addEventListener('pointermove', onMouseMove, false);
+        //window.addEventListener('pointermove', onMouseMove, false);
         window.addEventListener('resize', requestRender, false);
        // window.addEventListener('touchstart', onTouchStart, false);
        // window.addEventListener('touchmove', onTouchMove, false);
@@ -264,6 +336,7 @@ let renderRequested = false;
                         cube.position.x = i;
                         cube.position.y = j;
                         cube.position.z = k;
+
                         const initPosition = { x: i, y: j, z: k };
                         const angle = { x: 0, y: 0, z: 0 };
                         const storePosition = { x: 0, y: 0, z: 0, stored: false };

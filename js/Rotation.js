@@ -1,7 +1,7 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
 import { scene } from './RubixCube.js';
 /*const quaternion = new THREE.Quaternion();
-quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);*/
+quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Matthreejs object3d click eventh.PI / 2);*/
 
 
 /*let countexe = 0;*/
