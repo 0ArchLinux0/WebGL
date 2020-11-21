@@ -25,17 +25,17 @@ const rotZmatrix = math.matrix([
 
 export const RotateAxis = (cubeGroup, axisName, value) => {
     count++;
-/*    countexe++;*/
+    /*    countexe++;*/
     cubeGroup.forEach((cubeinPlane) => {
         cubeinPlane.forEach((cubeinLine) => {
             cubeinLine.forEach((cubeElement) => {
                 switch (axisName) {
 
                     case "X":
-                        if (cubeElement.cube.position.x == value) {
-                            if (!cubeElement.stored) {
+                        if (cubeElement.cube.position.x == value) { //If coordinate X matches the value
+                            if (!cubeElement.stored) { //Only stores at the beginning of new Rotation of PI/2
 
-                                cubeElement.storePosition.z = cubeElement.cube.position.z;
+                                cubeElement.storePosition.z = cubeElement.cube.position.z; //Store initial position
                                 cubeElement.storePosition.y = cubeElement.cube.position.y;
                                 cubeElement.stored = true;
                                 /*cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 0)) +
@@ -43,17 +43,18 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                     math.inv(cubeElement.rotAxisZMatrix).subset(math.index(0, 2)) * 4;*/
                             }
 
-                            cubeElement.angle.x += Math.PI / 120;
+                            cubeElement.angle.x += Math.PI / 120; //Store angle of each cube element's rotation
                             cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.storePosition.z - Math.sin(cubeElement.angle.x) * cubeElement.storePosition.y;
                             cubeElement.cube.position.y = Math.sin(cubeElement.angle.x) * cubeElement.storePosition.z + Math.cos(cubeElement.angle.x) * cubeElement.storePosition.y;
-                            //cubeElement.cube.rotationOrder='XYZ';
-   //cubeElement.cube.rotation.x -= Math.PI / 120;
-                            pivot.attach(cubeElement.cube);
-                            pivot.rotation.x -= Math.PI / 120;
-                            pivot.updateMatrixWorld();
-                            scene.attach(cubeElement.cube);
+                            //By this you can get better accurracy than---> 
+                            //--->cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.cube.position.z - Math.sin(cubeElement.angle.x) * cubeElement.cube.position.y;
 
-                            if (count == 60) {
+                            pivot.attach(cubeElement.cube); //If we just use cube.rotation.x if takes us to Euler's gimbal lock problem(has too use matrix **Line  41) 
+                            pivot.rotation.x -= Math.PI / 120; //To avoid that we make each cube element to descendant of new Object3D and rotate Object3D(Which is pivot here)
+                            pivot.updateMatrixWorld(); //Update Object3D
+                            scene.attach(cubeElement.cube); //Assential to display in screen
+
+                            if (count == 60) { //When Rotate PI/2
 
                                 cubeElement.stored = false;
                                 //cubeElement.cube.rotation.y -= Math.PI / 120;
@@ -67,32 +68,24 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 pivot.rotation.set(0, 0, 0);
                                 pivot.updateMatrixWorld();
 
-                             /*   console.log(cubeElement.cube.position.y);*/
-                                if (resetCount++ == 9) {
-                                    /*console.log("reset count X");*/
+                                if (resetCount++ == 9) { //When all the 9 Cube Element finished rotation for PI/2. Reset count and resetCount
                                     count = 0;
                                     resetCount = 1;
                                 }
                             }
-                         /*   console.log("X" + countexe);
-                            console.log("x " + cubeElement.cube.position.x + " y " + cubeElement.cube.position.y + " z " + cubeElement.cube.position.z);*/
                         }
                         break;
 
                     case "Y":
                         if (cubeElement.cube.position.y == value) {
                             if (!cubeElement.stored) {
-                                /*if (cubeElement.initPosition.x == 1 && cubeElement.initPosition.y == 1 && cubeElement.initPosition.z == 1) {
-                                    console.log("!!!!!!!");
-                                    console.log("Y stored" + cubeElement.rotAxisZMatrix);
-                                }
-*/
+
                                 cubeElement.storePosition.x = cubeElement.cube.position.x;
                                 cubeElement.storePosition.z = cubeElement.cube.position.z;
                                 cubeElement.stored = true;
-                               /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisYMatrix).subset(math.index(1, 0)) +
-                                    +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 1)) * 2 +
-                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 2)) * 4;*/
+                                /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisYMatrix).subset(math.index(1, 0)) +
+                                     +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 1)) * 2 +
+                                     math.inv(cubeElement.rotAxisZMatrix).subset(math.index(1, 2)) * 4;*/
 
                             }
 
@@ -103,8 +96,8 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                             pivot.rotation.y -= Math.PI / 120;
                             pivot.updateMatrixWorld();
                             scene.attach(cubeElement.cube);
-                        
-                            /*switch (cubeElement.AxisDeterm) {
+
+                            /*switch (cubeElement.AxisDeterm) { //Tryied this but failed before facing gimblock lock 
                                 case 1:
                                     cubeElement.cube.rotation.x -= Math.PI / 120;
                                     console.log("case1Y");
@@ -137,25 +130,20 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
                                 cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
 
-                              /*  cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);*/
-                            
+                                /*  cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);*/
+
                                 cubeElement.angle.y = 0;
                                 pivot.rotation.set(0, 0, 0);
                                 pivot.updateMatrixWorld();
 
-                               /* console.log(cubeElement.cube.position.x);
-                                console.log(cubeElement.cube.position.y);
-                                console.log(cubeElement.cube.position.z);*/
                                 if (resetCount++ == 9) {
                                     count = 0;
                                     resetCount = 1;
-                                  /*  console.log("reset count X");*/
+                                    /*  console.log("reset count X");*/
                                 }
 
 
                             }
-                           /* console.log("Y" + countexe);
-                            console.log("x " + cubeElement.cube.position.x + " y " + cubeElement.cube.position.y + " z " + cubeElement.cube.position.z);*/
                         }
                         break;
 
@@ -165,9 +153,9 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                                 cubeElement.storePosition.y = cubeElement.cube.position.y;
                                 cubeElement.storePosition.x = cubeElement.cube.position.x;
                                 cubeElement.stored = true;
-                               /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 0)) +
-                                    +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 1)) * 2 +
-                                    math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 2)) * 4;*/
+                                /* cubeElement.AxisDeterm = math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 0)) +
+                                     +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 1)) * 2 +
+                                     math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 2)) * 4;*/
                             }
                             cubeElement.angle.z += Math.PI / 120;
                             cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) * cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) * cubeElement.storePosition.x;
@@ -181,7 +169,7 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
                             /*  var some_quaternion = new THREE.Quaternion();
                               some_quaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 120);
                               cubeElement.cube.rotation.setFromQuaternion(some_quaternion, "XYZ", true);*/
-
+                            // I think I need to search about this quaternion
                             if (count == 60) {
                                 cubeElement.stored = false;
                                 cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
@@ -196,8 +184,6 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
 
                                 }
                             }
-                           /* console.log("Z" + countexe);
-                            console.log("x " + cubeElement.cube.position.x + " y " + cubeElement.cube.position.y + " z " + cubeElement.cube.position.z);*/
                         }
                         break;
                 }
@@ -207,6 +193,5 @@ export const RotateAxis = (cubeGroup, axisName, value) => {
     });
 }
 
-let pivot = new THREE.Object3D();
+let pivot = new THREE.Object3D();   //Create Ancestor Object3D
 pivot.rotation.set(0, 0, 0);
-

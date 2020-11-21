@@ -6,7 +6,7 @@ export const scene = new THREE.Scene();
 
 function main() {
 
-    const  SHUFFLE_TIME=5;
+    const SHUFFLE_TIME = 5;
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
@@ -127,9 +127,8 @@ function main() {
     let ran_num = 0;
 
     function requestRenderClick() {
-        //console.log(!isRunning+" click "+countClick+" ran: "+ran_num);
         countClick++;
-        if (!isRunning) {
+        if (!isRunning) { //Check if animate or animate_shuffle is running at the spot. Prevent malfunctioning caused by click event's asynchronism(rotate in different ways at same time so it stops rotating or rotate to wrong way)
             isRunning = true;
             requestAnimationFrame(animate_shuffle);
         }
@@ -141,19 +140,18 @@ function main() {
 
     function animate(time) {
 
-        if (i++ == 60) {
-            i = 0;
+        if (i++ == 60) { //R.RotateAxis rotates PI/120 so we need 60times of execution to rotate PI/2 radians.
+            i = 0; //Reset i
             ran_num = parseInt(Math.random() * 3 - 0.1);
-            isRunning = undefined;
-            arg1 = String.fromCharCode(88 + ran_num);
-            // console.log("ran"+(parseInt(Math.random()*100)%3-1));
-            arg2 = (parseInt(Math.random() * 100) % 3 - 1);
+            isRunning = undefined; //When rotating PI/2 is done,notify it is not runnig anymore
+            arg1 = String.fromCharCode(88 + ran_num); //Random char among X,Y,Z
+            arg2 = (parseInt(Math.random() * 100) % 3 - 1); //Random int from -1 to 1
             return;
         }
 
-        R.RotateAxis(cubeGroup, arg1, arg2);
+        R.RotateAxis(cubeGroup, arg1, arg2); //Rotate in Axis arg1, at row index arg2
 
-        if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+        if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
             prevWidth = canvas.width;
@@ -163,31 +161,30 @@ function main() {
             camera.aspect = canvas.width / canvas.height;
             camera.updateProjectionMatrix();
         }
-        controls.update();
-        renderer.render(scene, camera);
+        controls.update(); //Update
+        renderer.render(scene, camera); //render to display on screen
         requestAnimationFrame(animate);
 
     }
-    let exeCount=0;
+    let exeCount = 0;
 
-    function animate_shuffle(time) {
+    function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute animate() for certain SHUFFLE_TIME.
 
-        if (i++ == 60) {
-            i = 1;
+        if (i++ == 60) { //Reset when rotates PI/2
+            i = 1; //To match execute time to 60
             ran_num = parseInt(Math.random() * 3 - 0.1);
             isRunning = undefined;
-            exeCount++;
+            exeCount++; //Increase execution time to compare with SHUFFLE_TIME
             arg1 = String.fromCharCode(88 + ran_num);
-            // console.log("ran"+(parseInt(Math.random()*100)%3-1));
             arg2 = (parseInt(Math.random() * 100) % 3 - 1);
         }
-        if(exeCount==SHUFFLE_TIME){
-            exeCount=0;
-            i=0;
+        if (exeCount == SHUFFLE_TIME) { //When matches to SHUFFLE_TIME reset exeCount and i to intial vaule.
+            exeCount = 0;
+            i = 0;
             return;
         }
 
-        R.RotateAxis(cubeGroup, arg1, arg2);
+        R.RotateAxis(cubeGroup, arg1, arg2); //Rotate
 
         if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
             canvas.width = window.innerWidth * pixelRatio;
@@ -204,40 +201,8 @@ function main() {
         requestAnimationFrame(animate_shuffle);
 
     }
+
     //########  Desktop 
-
-    /*function onDown(){
-        isDown=true;
-        setTimeout(()=>{
-            isDown=false;
-        },250);
-        console.log("ondown isdown: "+isDown);
-    }
-    function onUp(){
-        console.log("on up");
-        console.log(isDown);
-       
-        if(isDown) requestRenderClick()
-        else{
-            console.log("is drag");
-            return;
-        } 
-        
-    }*/
-
-
-    /*  function onMouseMove(){
-          console.log("onmouse MOve!!!");
-          if(isDown){
-              isDrag=true;
-              requestRender();
-              console.log("isDrag in is Donw "+isDrag);
-          }
-          return ;
-      }*/
-
-    //###############On mobile, touchmove and pointermove didnt't worked either 
-
     let pos_down = [];
     let pos_up = [];
 
@@ -257,15 +222,20 @@ function main() {
             return;
         } else requestRenderClick();
     }
-    /*function onMouseMove(){
-        console.log("onmouse MOve!!!");
-        if(isDown){
-            isDrag=true;
-            requestRender();
-            console.log("isDrag in is Donw "+isDrag);
-        }
-        return ;
-    }*/
+
+    /*  function onMouseMove(){
+          console.log("onmouse MOve!!!");
+          if(isDown){
+              isDrag=true;
+              requestRender();
+              console.log("isDrag in is Donw "+isDrag);
+          }
+          return ;
+      }*/
+
+    //###############On mobile, touchmove and pointermove didnt't worked either 
+    //###############So I handled distinguishing click event and drag event 
+    //by distance of two coordinates of pointerdown and pointerup.
     //######
 
     //#####  Mobile
@@ -295,11 +265,6 @@ function main() {
         }*/
     //######
 
-    /*THREE.EventDispatcher.call( cubeGroup );
-    cubeGroup.addEventListener('pointerdown',onDown, false);*/
-    //spinner_obj.dispatchEvent({type:'start'});
-
-
     controls.addEventListener('change', requestRender, false); //called first at initializing
     window.addEventListener('pointerup', onUp, false);
     window.addEventListener('pointerdown', onDown, false);
@@ -309,9 +274,7 @@ function main() {
     // window.addEventListener('touchmove', onTouchMove, false);
     // window.addEventListener('touchend', onTouchEnd, false);
 
-
-
-    function makeInstanceCube() {
+    function makeInstanceCube() { //Create and initialize 27 cubes
         const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
         for (let i = -1; i < 2; i++) {
             for (let j = -1; j < 2; j++) {
@@ -341,13 +304,23 @@ function main() {
                     const AxisDeterm = 0;
 
                     cubeGroup[i + 1][j + 1][k + 1] = {
-                        cube,
-                        initPosition,
-                        storePosition,
-                        angle,
-                        rotAxisYMatrix,
-                        rotAxisZMatrix,
-                        AxisDeterm
+                        cube, //Object contains cube element
+                        initPosition, //Initposition which are going to be used when dertermine which the cube element is in the initial position or not
+                        storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
+                        angle, //store the rotation angle while rotation of PI/2
+                        /*  rotAxisYMatrix,   
+                          rotAxisZMatrix,
+                          AxisDeterm*/ //
+
+                        //express the change of coordinate axis in a matrix (save only the cumulative value by multiplication of the matrix).
+                        //By using the fact that the y-axis is affected by rotation of Axis x and the z-axis is affected by rotation of Axis x and x- and y-axes, 
+                        //the rotAxisY was saved by multiplying only the X-axis transformation matrix, 
+                        //and rotAxisZ was saved by multiplying x-axis and Y-axis transformation matrix
+                        //(Be careful of order you multiply the matrix!) 
+                        //but failed to correspond to the original coordinate system. 
+                        //Eventually, the final problem was gimbal lock.
+                        //When I turned the clock 90 degrees on the y-axis and 90 degrees on the z-axis, I was caught by a gb lock.
+
                     };
                     scene.add(cube);
 
