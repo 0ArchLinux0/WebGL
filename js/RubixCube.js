@@ -74,9 +74,9 @@ function main() {
     makeInstanceCube();
 
 
-    camera.position.x = 4;
-    camera.position.y = 4;
-    camera.position.z = 4;
+    camera.position.x = 5;
+    camera.position.y = 5;
+    camera.position.z = 5;
 
     {
         const color = 0xFFFFFF;
