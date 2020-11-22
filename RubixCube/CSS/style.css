@@ -37,15 +37,16 @@
  #shuffle{
  	position :fixed;
  	height:6%;
- 	width:6%;
+ 	width:70px;
  	top:25%;
  	left:30%;
+
  }
 
  #solve{
  	position :fixed;
  	height:6%;
- 	width:6%;
+ 	width:50px;
  	top:25%;
  	left:65%;
 

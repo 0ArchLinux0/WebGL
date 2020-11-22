@@ -6,28 +6,31 @@ export const scene = new THREE.Scene();
 
 function main() {
 
-    const SHUFFLE_TIME = 5;
+    const SHUFFLE_TIME = 1;
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
+    const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
     const pixelRatio = window.devicePixelRatio;
     canvas.width = window.innerWidth * pixelRatio;
     canvas.height = window.innerHeight * pixelRatio;
     let prevWidth = canvas.width;
     let prevHeight = canvas.height;
-    const controls = new OrbitControls(camera, canvas);
+
+    const controls = new OrbitControls(camera, canvas); //Enable camera rotation when drag
     controls.enableDamping = false; //rotate as if it has a inertia
-    controls.target.set(0, 0, 0);
+    controls.target.set(0, 0, 0); //Center of rotation
     controls.update();
 
     let isDrag = false;
     let isDown = false;
     let isTouchMove = false;
+    let buttonDown = false;
 
-    const renderer = new THREE.WebGLRenderer({ canvas });
+    const renderer = new THREE.WebGLRenderer({ canvas }); //Render on canvas
     renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
-    renderer.setClearColor(0xdee2e6);
-    document.body.appendChild(renderer.domElement);
+    renderer.setClearColor(0xdee2e6); //Background color 
+    document.body.appendChild(renderer.domElement); //Push
 
     const COLOR_DIRECTIONS = {
         "UP": new THREE.Color("white"),
@@ -38,7 +41,7 @@ function main() {
         "BACK": new THREE.Color("orange"),
     }
 
-    const setMaterialColors = (x, y, z, materials) => {
+    const setMaterialColors = (x, y, z, materials) => { //Create Materials with Color on each face
 
         const colorMaterials = [];
 
@@ -76,25 +79,25 @@ function main() {
     makeInstanceCube();
 
 
-    camera.position.x = 5;
+    camera.position.x = 5; //Set camera's default position
     camera.position.y = 5;
     camera.position.z = 5;
 
-    {
+    { //Set light
         const color = 0xFFFFFF;
         const intensity = 1;
-        /*      const light = new THREE.DirectionalLight(color, intensity);
+        /*      const light = new THREE.DirectionalLight(color, intensity); //Direct Light
          
         /*    light.position.set(-1, 2, 4);
          */
-        const light = new THREE.AmbientLight(color, intensity);
-        scene.add(light);
+        const light = new THREE.AmbientLight(color, intensity); //Light up the entire space
+        scene.add(light); //Add
 
     }
 
     let renderRequested = false;
 
-    function render(time) {
+    function render(time) { //Render(When camera rotate or etc...)
         if ((!isMobile) && ((prevWidth !== canvas.width) || (prevHeight !== canvas.heigth))) { //size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
@@ -113,30 +116,30 @@ function main() {
 
     render();
 
-    function requestRender() {
+    function requestRender() { //Check if Render is running
 
         if (!renderRequested) {
             renderRequested = true;
-            requestAnimationFrame(render);
+            requestAnimationFrame(render); //Callback render
         }
 
     }
 
     let countClick = 0;
     let isRunning = false;
-    let ran_num = 0;
+    let ran_num = parseInt(Math.random() * 3 - 0.1);
 
     function requestRenderClick() {
         countClick++;
         if (!isRunning) { //Check if animate or animate_shuffle is running at the spot. Prevent malfunctioning caused by click event's asynchronism(rotate in different ways at same time so it stops rotating or rotate to wrong way)
             isRunning = true;
-            requestAnimationFrame(animate_shuffle);
+            requestAnimationFrame(animate_shuffle); //Callback animate_shuffle
         }
     }
 
     let i = 0;
-    let arg1 = String.fromCharCode(88 + ran_num);
-    let arg2 = 0;
+    let arg1 = String.fromCharCode(88 + ran_num); //88 is 'X'
+    let arg2 = (parseInt(Math.random() * 100) % 3 - 1);;
 
     function animate(time) {
 
@@ -166,6 +169,21 @@ function main() {
         requestAnimationFrame(animate);
 
     }
+
+    function solveCube(time) {
+        //camera.translateZ(1);
+        buttonDown = true;
+        camera.translateY(-1);
+        //camera.position.x+=1;
+        camera.lookAt(0, 0, 0);
+        camera.updateProjectionMatrix();
+        renderer.render(scene, camera);
+        //console.log("double");
+        controls.update();
+
+    }
+
+
     let exeCount = 0;
 
     function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute animate() for certain SHUFFLE_TIME.
@@ -210,18 +228,23 @@ function main() {
         pos_down[0] = e.pageX;
         pos_down[1] = e.pageY;
         isDown = true;
+        //console.log("ondown");
     }
 
-    function onUp(e) {
-        pos_up[0] = e.pageX;
-        pos_up[1] = e.pageY;
-        isDown = false;
-        const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
-        if ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 40) {
-            isDrag = false;
-            return;
-        } else requestRenderClick();
-    }
+    const onUp = (e) => {
+        setTimeout(()=>{
+            pos_up[0] = e.pageX;
+            pos_up[1] = e.pageY;
+            //console.log("onup");
+            const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
+            if (buttonDown||((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
+                isDrag = false;
+                buttonDown=false
+                return;
+            } else requestRenderClick();
+            isDown = false;
+        }, 5);
+    };
 
     /*  function onMouseMove(){
           console.log("onmouse MOve!!!");
@@ -264,15 +287,20 @@ function main() {
             requestRenderClick();
         }*/
     //######
-
+    const btn_solve = document.getElementById("solve");
+    const btn_shuffle = document.getElementById("shuffle");
     controls.addEventListener('change', requestRender, false); //called first at initializing
-    window.addEventListener('pointerup', onUp, false);
+    btn_shuffle.addEventListener('pointerup', requestRenderClick, false);
+    btn_solve.addEventListener('pointerup', solveCube, false);
+
+    let checkup = window.addEventListener('pointerup', onUp, false);
     window.addEventListener('pointerdown', onDown, false);
     //window.addEventListener('pointermove', onMouseMove, false);
     window.addEventListener('resize', requestRender, false);
-    // window.addEventListener('touchstart', onTouchStart, false);
-    // window.addEventListener('touchmove', onTouchMove, false);
-    // window.addEventListener('touchend', onTouchEnd, false);
+    window.addEventListener('dbclick', solveCube, false);
+    //window.addEventListener('touchstart', onTouchStart, false);
+    //window.addEventListener('touchmove', onTouchMove, false);
+    //window.addEventListener('touchend', onTouchEnd, false);
 
     function makeInstanceCube() { //Create and initialize 27 cubes
         const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
