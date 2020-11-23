@@ -5,33 +5,33 @@ import { isMobile } from './mobile_detect.js';
 import * as CubeSolver from './CubeSolver.js'
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
-export const rotateAgain = (solveCubeButtonListener) => {
 
-};
+const canvas = document.querySelector('#canvas');
+
+export const controls = new OrbitControls(camera, canvas); //Enable camera rotation when drag
+controls.enableDamping = false; //rotate as if it has a inertia
+controls.target.set(0, 0, 0); //Center of rotation
+controls.update();
 
 
 const SHUFFLE_TIME = 6;
 const CLOCKWISE = 1;
 const ANTICLOCKWISE = -1;
 
-const canvas = document.querySelector('#canvas');
+
 const pixelRatio = window.devicePixelRatio;
 canvas.width = window.innerWidth * pixelRatio;
 canvas.height = window.innerHeight * pixelRatio;
 let prevWidth = canvas.width;
 let prevHeight = canvas.height;
 
-const controls = new OrbitControls(camera, canvas); //Enable camera rotation when drag
-controls.enableDamping = false; //rotate as if it has a inertia
-controls.target.set(0, 0, 0); //Center of rotation
-controls.update();
 
 let isDrag = false;
 let isDown = false;
 let isTouchMove = false;
 let buttonDown = false;
 
-const renderer = new THREE.WebGLRenderer({ canvas }); //Render on canvas
+export const renderer = new THREE.WebGLRenderer({ canvas }); //Render on canvas
 renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
 renderer.setClearColor(0xdee2e6); //Background color 
 document.body.appendChild(renderer.domElement); //Push
@@ -62,7 +62,7 @@ const setMaterialColors = (x, y, z, materials) => { //Create Materials with Colo
     return colorMaterials;
 }
 
-const cubeGroup = [
+ export const cubeGroup = [
     [
         [],
         [],
@@ -195,86 +195,17 @@ let needExecute = 1; //Number of times the fucntion has to be executed
 let needExecuteInitialized = false;
 let isSolving = false;
 
-export const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
-    buttonDown = true;
-    isSolving = true;
+const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
     if (isRunning) return;
-    solveCubeButton();
+    const result=CubeSolver.solveCubeButton(/*buttonDown,isSolving*/);
+    buttonDown =result;
+    isSolving = result;
+    if(buttonDown)requestAnimationFrame(solveCubeButtonListener);
 }
 
-const solveCubeButton = () => { //Solve Cube when solve button clicked
-    buttonDown = true;
-    isSolving = true;
 
 
-    if (i++ == 60) { //Reset when rotates PI/2
-        i = 1;
-        countExecute++;
-    }
-    if (countExecute == needExecute) {
-        i = 0;
-        countExecute = 0;
-        needExecute = 1;
-        needExecuteInitialized = false;
-        buttonDown = false;
-        isSolving = false;
-        //console.log("solveCubeButton init");
-        step1_2();
-        return;
-       }
-
-    if (!needExecuteInitialized) {
-        needExecuteInitialized = true;
-        needExecute = CubeSolver.step1_1(cubeGroup);
-       // console.log("need init "+needExecute);
-    } else {
-        CubeSolver.step1_1(cubeGroup);
-    }
-
-    //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
-    //camera.position.x+=1; //Move camera's absolute position
-
-    controls.update();
-    renderer.render(scene, camera);
-
-    requestAnimationFrame(solveCubeButton);
-}
-
- export const step1_2 = (time) => { //Solve Cube when solve button clicked
     
-    buttonDown = true;
-    isSolving = true;
-
-    if (i++ == 60) { //Reset when rotates PI/2
-        i = 1;
-        countExecute++;
-    }
-    if (countExecute == needExecute) {
-        i = 0;
-        countExecute = 0;
-        needExecute = 1;
-        needExecuteInitialized = false;
-        buttonDown = false;
-        isSolving = false;
-        console.log("step2");
-        console.log("count"+countExecute);
-        return;
-    }
-
-    if (!needExecuteInitialized) {
-        needExecuteInitialized = true;
-        needExecute = CubeSolver.step1_2(cubeGroup);
-        console.log("need init "+needExecute);
-    } else {
-        CubeSolver.step1_2(cubeGroup);
-    }
-
-    controls.update();
-    renderer.render(scene, camera);
-
-    requestAnimationFrame(step1_2);
-}
-
 
 let exeCount = 0;
 
@@ -359,12 +290,12 @@ const onUp = (e) => {
     // setTimeout(()=>{
     pos_up[0] = e.pageX;
     pos_up[1] = e.pageY;
-    console.log("onup");
+   // console.log("onup");
     const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
     // console.log(v);
-    console.log("bdown" + buttonDown);
+   // console.log("bdown" + buttonDown);
     if (buttonDown || ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
-        console.log("return");
+    //    console.log("return");
         buttonDown = false;
         return;
     }
@@ -458,12 +389,13 @@ function makeInstanceCube() { //Create and initialize 27 cubes
                     [0, 0, 1]
                 ]);
                 const AxisDeterm = 0;
-
+                const rotTotal = 0;
                 cubeGroup[i + 1][j + 1][k + 1] = {
                     cube, //Object contains cube element
 
                     storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
                     angle, //store the rotation angle while rotation of PI/2
+                    rotTotal
                     /*  rotAxisYMatrix,   
                       rotAxisZMatrix,
                       AxisDeterm*/ //
