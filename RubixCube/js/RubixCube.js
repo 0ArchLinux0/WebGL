@@ -2,14 +2,16 @@ import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threej
 import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
 import * as R from './Rotation.js';
 import { isMobile } from './mobile_detect.js';
+import * as CubeSolver from './CubeSolver.js'
 export const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
 
 function main() {
 
-    const SHUFFLE_TIME = 1;
+    const SHUFFLE_TIME = 6;
+    const CLOCKWISE = 1;
+    const ANTICLOCKWISE = -1;
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
-    const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
     const canvas = document.querySelector('#canvas');
     const pixelRatio = window.devicePixelRatio;
     canvas.width = window.innerWidth * pixelRatio;
@@ -79,9 +81,9 @@ function main() {
     makeInstanceCube();
 
 
-    camera.position.x = 5; //Set camera's default position
-    camera.position.y = 5;
-    camera.position.z = 5;
+    camera.position.x = 4; //Set camera's default position
+    camera.position.y = 4;
+    camera.position.z = 4;
 
     { //Set light
         const color = 0xFFFFFF;
@@ -124,13 +126,21 @@ function main() {
         }
 
     }
+    /*
+        function requestRender_shuffle_once() { //Check if Render is running
 
-    let countClick = 0;
+            if (!renderRequested) {
+                renderRequested = true;
+                requestAnimationFrame(animate_click); //Callback render
+            }
+
+        }*/
+
     let isRunning = false;
     let ran_num = parseInt(Math.random() * 3 - 0.1);
 
-    function requestRenderClick() {
-        countClick++;
+    function requestRenderShuffle() {
+        buttonDown = true;
         if (!isRunning) { //Check if animate or animate_shuffle is running at the spot. Prevent malfunctioning caused by click event's asynchronism(rotate in different ways at same time so it stops rotating or rotate to wrong way)
             isRunning = true;
             requestAnimationFrame(animate_shuffle); //Callback animate_shuffle
@@ -142,7 +152,7 @@ function main() {
     let arg2 = (parseInt(Math.random() * 100) % 3 - 1);;
 
     function animate(time) {
-
+        isRunning = true;   //Prevent malfunctioning when click multiple times in a row,'isRunning=undefiend' in line 159 causes  when button clicked
         if (i++ == 60) { //R.RotateAxis rotates PI/120 so we need 60times of execution to rotate PI/2 radians.
             i = 0; //Reset i
             ran_num = parseInt(Math.random() * 3 - 0.1);
@@ -152,7 +162,7 @@ function main() {
             return;
         }
 
-        R.RotateAxis(cubeGroup, arg1, arg2); //Rotate in Axis arg1, at row index arg2
+        R.RotateAxis(cubeGroup, arg1, ANTICLOCKWISE, arg2); //Rotate in Axis arg1, at row index arg2
 
         if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
             canvas.width = window.innerWidth * pixelRatio;
@@ -170,17 +180,28 @@ function main() {
 
     }
 
-    function solveCube(time) {
-        //camera.translateZ(1);
+    function solveCubeButtonListener(time) { //Solve Cube when solve button clicked
         buttonDown = true;
-        camera.translateY(-1);
-        //camera.position.x+=1;
-        camera.lookAt(0, 0, 0);
-        camera.updateProjectionMatrix();
-        renderer.render(scene, camera);
-        //console.log("double");
-        controls.update();
+        if (isRunning) return;
 
+        if (i++ == 61) { //Reset when rotates PI/2
+            i = 0;
+            buttonDown = false;
+            return;
+        }
+        CubeSolver.solveCube(cubeGroup);
+        //camera.translateY(+0.01);
+        //console.log("button");
+        // camera.rotation+=0.1;
+        //camera.translateZ(1);
+
+        //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
+        //camera.position.x+=1; //Move camera's absolute position
+        
+        controls.update();
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(solveCubeButtonListener);
     }
 
 
@@ -199,10 +220,11 @@ function main() {
         if (exeCount == SHUFFLE_TIME) { //When matches to SHUFFLE_TIME reset exeCount and i to intial vaule.
             exeCount = 0;
             i = 0;
+            buttonDown = false;
             return;
         }
-
-        R.RotateAxis(cubeGroup, arg1, arg2); //Rotate
+        buttonDown = true;
+        R.RotateAxis(cubeGroup, arg1, 1, arg2); //Rotate
 
         if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
             canvas.width = window.innerWidth * pixelRatio;
@@ -219,6 +241,36 @@ function main() {
         requestAnimationFrame(animate_shuffle);
 
     }
+    /*
+        function animate_click(time) { 
+
+            if (i++ == 60) { //Reset when rotates PI/2
+                i = 0; //Reset
+                ran_num = parseInt(Math.random() * 3 - 0.1);
+                isRunning = undefined;
+                arg1 = String.fromCharCode(88 + ran_num);
+                arg2 = (parseInt(Math.random() * 100) % 3 - 1);
+                return;
+            }
+
+          
+            R.RotateAxis(cubeGroup, arg1, arg2); //Rotate
+
+            if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
+                canvas.width = window.innerWidth * pixelRatio;
+                canvas.height = window.innerHeight * pixelRatio; //change canvas size
+                prevWidth = canvas.width;
+                prevHeight = canvas.height; //store prev value to compare
+                renderer.setSize(window.innerWidth, window.innerHeight); //change render size
+                // setting camera aspect to prevent view from crushing
+                camera.aspect = canvas.width / canvas.height;
+                camera.updateProjectionMatrix();
+            }
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate_shuffle);
+
+        }*/
 
     //########  Desktop 
     let pos_down = [];
@@ -232,18 +284,23 @@ function main() {
     }
 
     const onUp = (e) => {
-        setTimeout(()=>{
-            pos_up[0] = e.pageX;
-            pos_up[1] = e.pageY;
-            //console.log("onup");
-            const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
-            if (buttonDown||((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
-                isDrag = false;
-                buttonDown=false
-                return;
-            } else requestRenderClick();
-            isDown = false;
-        }, 5);
+        // setTimeout(()=>{
+        pos_up[0] = e.pageX;
+        pos_up[1] = e.pageY;
+        console.log("onup");
+        const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
+        // console.log(v);
+        console.log("bdown" + buttonDown);
+        if (buttonDown || ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
+            console.log("return");
+            buttonDown = false;
+            return;
+        } 
+        animate();
+        isRunning = true;
+        isDown = false;
+        buttonDown = false;
+        //}, 50);
     };
 
     /*  function onMouseMove(){
@@ -284,20 +341,20 @@ function main() {
                 isTouchMove=false;
                 return;
             }
-            requestRenderClick();
+            requestRenderShuffle();
         }*/
     //######
     const btn_solve = document.getElementById("solve");
     const btn_shuffle = document.getElementById("shuffle");
     controls.addEventListener('change', requestRender, false); //called first at initializing
-    btn_shuffle.addEventListener('pointerup', requestRenderClick, false);
-    btn_solve.addEventListener('pointerup', solveCube, false);
+    btn_shuffle.addEventListener('pointerup', requestRenderShuffle, false);
+    btn_solve.addEventListener('pointerup', solveCubeButtonListener, false);
 
-    let checkup = window.addEventListener('pointerup', onUp, false);
+    window.addEventListener('pointerup', onUp, false);
     window.addEventListener('pointerdown', onDown, false);
     //window.addEventListener('pointermove', onMouseMove, false);
     window.addEventListener('resize', requestRender, false);
-    window.addEventListener('dbclick', solveCube, false);
+    //window.addEventListener('dbclick', solveCubeButtonListener, false);
     //window.addEventListener('touchstart', onTouchStart, false);
     //window.addEventListener('touchmove', onTouchMove, false);
     //window.addEventListener('touchend', onTouchEnd, false);
@@ -311,12 +368,11 @@ function main() {
                     const boxmaterials = new THREE.MeshBasicMaterial({});
                     const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
                     const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
-                    cubeGroup[i + 1][j + 1].push(cube);
+                    cubeGroup[i + 1][j + 1].push(cube); //Can get init position by simple subtraction
                     cube.position.x = i;
                     cube.position.y = j;
                     cube.position.z = k;
 
-                    const initPosition = { x: i, y: j, z: k };
                     const angle = { x: 0, y: 0, z: 0 };
                     const storePosition = { x: 0, y: 0, z: 0, stored: false };
                     const rotAxisYMatrix = math.matrix([
@@ -333,7 +389,7 @@ function main() {
 
                     cubeGroup[i + 1][j + 1][k + 1] = {
                         cube, //Object contains cube element
-                        initPosition, //Initposition which are going to be used when dertermine which the cube element is in the initial position or not
+
                         storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
                         angle, //store the rotation angle while rotation of PI/2
                         /*  rotAxisYMatrix,   
