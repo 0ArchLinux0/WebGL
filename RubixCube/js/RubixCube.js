@@ -5,9 +5,9 @@ import { isMobile } from './mobile_detect.js';
 import * as CubeSolver from './CubeSolver.js'
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
-export const rotateAgain=(solveCubeButtonListener)=>{
- 
-    };
+export const rotateAgain = (solveCubeButtonListener) => {
+
+};
 
 function main() {
 
@@ -155,7 +155,7 @@ function main() {
     let arg2 = (parseInt(Math.random() * 100) % 3 - 1);;
 
     function animate(time) {
-        isRunning = true;   //Prevent malfunctioning when click multiple times in a row,'isRunning=undefiend' in line 159 causes  when button clicked
+        isRunning = true; //Prevent malfunctioning when click multiple times in a row,'isRunning=undefiend' in line 159 causes  when button clicked
         if (i++ == 60) { //R.RotateAxis rotates PI/120 so we need 60times of execution to rotate PI/2 radians.
             i = 0; //Reset i
             ran_num = parseInt(Math.random() * 3 - 0.1);
@@ -165,8 +165,8 @@ function main() {
             return;
         }
 
-       // R.RotateAxis(cubeGroup, arg1, ANTICLOCKWISE, arg2); //Rotate in Axis arg1, at row index arg2
-       R.RotateAxis(cubeGroup, "X", ANTICLOCKWISE, 0);
+        // R.RotateAxis(cubeGroup, arg1, ANTICLOCKWISE, arg2); //Rotate in Axis arg1, at row index arg2
+        R.RotateAxis(cubeGroup, "X", ANTICLOCKWISE, 0);
         if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
             canvas.width = window.innerWidth * pixelRatio;
             canvas.height = window.innerHeight * pixelRatio; //change canvas size
@@ -183,33 +183,19 @@ function main() {
 
     }
 
-    /*function solveCubeButtonListener(time) { //Solve Cube when solve button clicked
-        buttonDown = true;
-        if (isRunning) return;
+    //camera.translateY(+0.01);
+    //console.log("button");
+    // camera.rotation+=0.1;
+    //camera.translateZ(1);
 
-        if (i++ == 60) { //Reset when rotates PI/2
-            i = 0;
-            buttonDown = false;
-            return;
-        }
-        CubeSolver.solveCube(cubeGroup);
-        //camera.translateY(+0.01);
-        //console.log("button");
-        // camera.rotation+=0.1;
-        //camera.translateZ(1);
+    //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
+    //camera.position.x+=1; //Move camera's absolute position
 
-        //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
-        //camera.position.x+=1; //Move camera's absolute position
-        
-        controls.update();
-        renderer.render(scene, camera);
+    let countExecute = 0;
+    let needExecute = 1;
+    let needExecuteInitialized = false;
 
-        requestAnimationFrame(solveCubeButtonListener);
-    }*/
-    let countExecute=0;
-    let needExecute=1;
-    let needExecuteInitialized=false;
-     function solveCubeButtonListener(time) { //Solve Cube when solve button clicked
+    function solveCubeButtonListener(time) { //Solve Cube when solve button clicked
         buttonDown = true;
         if (isRunning) return;
 
@@ -219,33 +205,28 @@ function main() {
             countExecute++;
             console.log("check1");
         }
-        console.log("countexe"+countExecute);
-        console.log("needexe"+needExecute);
-        if(countExecute==needExecute){
+        console.log("countexe" + countExecute);
+        console.log("needexe" + needExecute);
+        if (countExecute == needExecute) {
             console.log("check2");
-            i=0;
-            countExecute=0;
-            needExecute=1;
+            i = 0;
+            countExecute = 0;
+            needExecute = 1;
             buttonDown = false;
-            needExecuteInitialized=false;
-              console.log("buttonDown"+buttonDown);
+            needExecuteInitialized = false;
+            console.log("buttonDown" + buttonDown);
             return;
         }
-        //camera.translateY(+0.01);
-        //console.log("button");
-        // camera.rotation+=0.1;
-        //camera.translateZ(1);
-
-         if(!needExecuteInitialized){
-            needExecuteInitialized=true;
-            needExecute=CubeSolver.step1(cubeGroup);
-         }else{
+        if (!needExecuteInitialized) {
+            needExecuteInitialized = true;
+            needExecute = CubeSolver.step1(cubeGroup);
+        } else {
             CubeSolver.step1(cubeGroup);
-         }
+        }
 
         //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
         //camera.position.x+=1; //Move camera's absolute position
-        
+
         controls.update();
         renderer.render(scene, camera);
 
@@ -344,7 +325,7 @@ function main() {
             console.log("return");
             buttonDown = false;
             return;
-        } 
+        }
         animate();
         isRunning = true;
         isDown = false;
