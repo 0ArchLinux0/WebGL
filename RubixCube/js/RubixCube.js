@@ -197,15 +197,12 @@ let isSolving = false;
 
 const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
     if (isRunning) return;
-    const result=CubeSolver.solveCubeButton(/*buttonDown,isSolving*/);
-    buttonDown =result;
-    isSolving = result;
-    if(buttonDown)requestAnimationFrame(solveCubeButtonListener);
+    isSolving=CubeSolver.solveCubeStart();
+    buttonDown =isSolving;
+    if(isSolving)requestAnimationFrame(solveCubeButtonListener);
+    else CubeSolver.step2_1();
 }
-
-
-
-    
+   
 
 let exeCount = 0;
 
@@ -244,36 +241,6 @@ function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute
     requestAnimationFrame(animate_shuffle);
 
 }
-/*
-    function animate_click(time) { 
-
-        if (i++ == 60) { //Reset when rotates PI/2
-            i = 0; //Reset
-            ran_num = parseInt(Math.random() * 3 - 0.1);
-            isRunning = undefined;
-            arg1 = String.fromCharCode(88 + ran_num);
-            arg2 = (parseInt(Math.random() * 100) % 3 - 1);
-            return;
-        }
-
-      
-        R.RotateAxis(cubeGroup, arg1, arg2); //Rotate
-
-        if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
-            canvas.width = window.innerWidth * pixelRatio;
-            canvas.height = window.innerHeight * pixelRatio; //change canvas size
-            prevWidth = canvas.width;
-            prevHeight = canvas.height; //store prev value to compare
-            renderer.setSize(window.innerWidth, window.innerHeight); //change render size
-            // setting camera aspect to prevent view from crushing
-            camera.aspect = canvas.width / canvas.height;
-            camera.updateProjectionMatrix();
-        }
-        controls.update();
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate_shuffle);
-
-    }*/
 
 //########  Desktop 
 let pos_down = [];

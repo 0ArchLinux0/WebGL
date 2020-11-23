@@ -209,10 +209,10 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                             cubeElement.stored = true;
 
                         }
-
                         cubeElement.angle.x += clockwise * Math.PI / 120; //Store angle of each cube element's rotation
                         cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.storePosition.z - Math.sin(cubeElement.angle.x) * cubeElement.storePosition.y;
                         cubeElement.cube.position.y = Math.sin(cubeElement.angle.x) * cubeElement.storePosition.z + Math.cos(clockwise * cubeElement.angle.x) * cubeElement.storePosition.y;
+                        cubeElement.rotTotal+=clockwise;
                         //By this you can get better accurracy than---> 
                         //--->cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.cube.position.z - Math.sin(cubeElement.angle.x) * cubeElement.cube.position.y;
 
@@ -251,6 +251,8 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                         cubeElement.angle.y += clockwise * Math.PI / 120;
                         cubeElement.cube.position.x = Math.cos(cubeElement.angle.y) * cubeElement.storePosition.x - Math.sin(cubeElement.angle.y) * cubeElement.storePosition.z;
                         cubeElement.cube.position.z = Math.sin(cubeElement.angle.y) * cubeElement.storePosition.x + Math.cos(cubeElement.angle.y) * cubeElement.storePosition.z;
+                        cubeElement.rotTotal+=clockwise;
+
                         pivot.attach(cubeElement.cube);
                         pivot.rotation.y -= clockwise * Math.PI / 120;
                         pivot.updateMatrixWorld();
@@ -286,6 +288,7 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                         cubeElement.angle.z += clockwise * Math.PI / 120;
                         cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) * cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) * cubeElement.storePosition.x;
                         cubeElement.cube.position.x = Math.sin(cubeElement.angle.z) * cubeElement.storePosition.y + Math.cos(cubeElement.angle.z) * cubeElement.storePosition.x;
+                        cubeElement.rotTotal+=clockwise;
 
                         pivot.attach(cubeElement.cube);
                         pivot.rotation.z -= clockwise * Math.PI / 120;

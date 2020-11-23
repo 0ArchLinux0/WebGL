@@ -1,5 +1,5 @@
 import * as Control from './CameraControl.js'
-import { controls, camera, scene , renderer ,cubeGroup} from './RubixCube.js';
+import { controls, camera, scene, renderer, cubeGroup } from './RubixCube.js';
 
 
 const CLOCKWISE = 1;
@@ -11,20 +11,20 @@ let storedZ;
 let count = 0;
 let Initialized = false;
 
-let i=0;
+let i = 0;
 let countExecute = 0;
 let needExecute = 1; //Number of times the fucntion has to be executed
-let Execute=0;
+let Execute = 0;
 let needExecuteInitialized = false;
 //let isSolving = false;
 
-export const solveCube = (/*cubeGroup*/) => {
+export const solveCube = ( /*cubeGroup*/ ) => {
     step1(cubeGroup);
 
 
 }
 
-export const step1_1 = (/*cubeGroup*/) => { //Make white face look up
+export const step1_1 = ( /*cubeGroup*/ ) => { //Make white face look up
 
     if (!Initialized) { //Store init position just one time
         Initialized = true;
@@ -44,7 +44,7 @@ export const step1_1 = (/*cubeGroup*/) => { //Make white face look up
             break;
         case 1: //If white face center cube is on it's right position
             Execute = 0;
-            Initialized=false;
+            Initialized = false;
             return 0;
         case -1: //On opsite side of cube.InitPosition	Have to rotate one more time
             Control.rotateCube(cubeGroup, "X", CLOCKWISE);
@@ -58,16 +58,12 @@ export const step1_1 = (/*cubeGroup*/) => { //Make white face look up
     }
     return Execute;
 }
-
-export const step1_2 = (/*cubeGroup*/) => {
+const step1_2 = () => {
     let needExecute;
     if (!Initialized) { //Store init position just one time
         Initialized = true;
         storedX = cubeGroup[2][1][1].cube.position.x; //Position of the white face center cube
         storedZ = cubeGroup[2][1][1].cube.position.z;
-        /*if (storedZ == 1) needExecute = 1;
-		else if (storedZ == -1) needExecute = 1;
-    	else if (storedX == -1) needExecute = 2;*/
     }
 
     if (storedZ == 1) {
@@ -79,10 +75,10 @@ export const step1_2 = (/*cubeGroup*/) => {
     } else if (storedX == -1) {
         Control.rotateCube(cubeGroup, "Y", CLOCKWISE);
         needExecute = 2;
-    } else{
-    	needExecute=0;
-    	Initialized=false;
-    	return 0;
+    } else {
+        needExecute = 0;
+        Initialized = false;
+        return 0;
     }
     if (count++ == 59) { //step1 is called only 60times therefore set the number to 59
         count = 0;
@@ -92,7 +88,7 @@ export const step1_2 = (/*cubeGroup*/) => {
     return needExecute;
 }
 
-const Render_step1_2 = (/*cubeGroup*/) => { //Solve Cube when solve button clicked
+const Render_step1_2 = ( /*cubeGroup*/ ) => { //Solve Cube when solve button clicked
 
     if (i++ == 60) { //Reset when rotates PI/2
         i = 1;
@@ -104,14 +100,14 @@ const Render_step1_2 = (/*cubeGroup*/) => { //Solve Cube when solve button click
         needExecute = 1;
         needExecuteInitialized = false;
         console.log("step2");
-        console.log("count"+countExecute);
-        return ;
+        console.log("count" + countExecute);
+        return;
     }
 
     if (!needExecuteInitialized) {
         needExecuteInitialized = true;
         needExecute = step1_2(cubeGroup);
-        console.log("need init "+needExecute);
+        console.log("need init " + needExecute);
     } else {
         step1_2(cubeGroup);
     }
@@ -123,8 +119,8 @@ const Render_step1_2 = (/*cubeGroup*/) => { //Solve Cube when solve button click
 }
 
 
-export const solveCubeButton = (/*buttonDown , isSolving*//*, cubeGroup*/) => { //Solve Cube when solve button clicked
- 
+export const solveCubeStart = ( /*buttonDown , isSolving*/ /*, cubeGroup*/ ) => { //Solve Cube when solve button clicked
+
     if (i++ == 60) { //Reset when rotates PI/2
         i = 1;
         countExecute++;
@@ -137,14 +133,14 @@ export const solveCubeButton = (/*buttonDown , isSolving*//*, cubeGroup*/) => { 
         //console.log("solveCubeButton init");
         Render_step1_2();
         return false;
-       }
+    }
 
     if (!needExecuteInitialized) {
         needExecuteInitialized = true;
         needExecute = step1_1();
-       // console.log("need init "+needExecute);
+        // console.log("need init "+needExecute);
     } else {
-        step1_1(/*cubeGroup*/);
+        step1_1( /*cubeGroup*/ );
     }
 
     //camera.translateY(-1); //Move camea's relative position(sphere Y is limeted to -PI/2 to PI/2)
@@ -153,5 +149,5 @@ export const solveCubeButton = (/*buttonDown , isSolving*//*, cubeGroup*/) => { 
     controls.update();
     renderer.render(scene, camera);
     return true;
-    
+
 }
