@@ -195,7 +195,7 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
 let pivot = new THREE.Object3D(); //Create Ancestor Object3D
 pivot.rotation.set(0, 0, 0);
 
-export const RotateAll = (cubeGroup, axisName, clockwise) => {
+export const RotateAll = (cubeGroup, axisName, clockwise) => {  //Rotate the hole cube
    count++;
     cubeGroup.forEach((cubeinPlane) => {
         cubeinPlane.forEach((cubeinLine) => {
