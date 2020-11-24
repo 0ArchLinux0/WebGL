@@ -163,9 +163,10 @@ function animate(time) {
         arg2 = (parseInt(Math.random() * 100) % 3 - 1); //Random int from -1 to 1
         return;
     }
-
-    // R.RotateAxis(cubeGroup, arg1, ANTICLOCKWISE, arg2); //Rotate in Axis arg1, at row index arg2
-    R.RotateAxis(cubeGroup, "X", ANTICLOCKWISE, 0);
+    console.log("called animate");
+     //R.RotateAxis(cubeGroup, arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
+     R.RotateAxis(cubeGroup, "Y", 1, 1); //Rotate in Axis arg1, at row index arg2
+    //R.RotateAxisRender("X", ANTICLOCKWISE, -1,4);
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
         canvas.width = window.innerWidth * pixelRatio;
         canvas.height = window.innerHeight * pixelRatio; //change canvas size
@@ -178,7 +179,7 @@ function animate(time) {
     }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
-    requestAnimationFrame(animate);
+     requestAnimationFrame(animate);
 
 }
 
@@ -197,10 +198,16 @@ let isSolving = false;
 
 const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
     if (isRunning) return;
+    camera.position.x=4;
+    camera.position.y=4;
+    camera.position.z=4;
+    camera.lookAt(-1,-1,-1);
+
+
     isSolving=CubeSolver.solveCubeStart();
     buttonDown =isSolving;
     if(isSolving)requestAnimationFrame(solveCubeButtonListener);
-    else CubeSolver.step2_1();
+    //else CubeSolver.step2_1();
 }
    
 
@@ -224,7 +231,7 @@ function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute
         return;
     }
     buttonDown = true;
-    R.RotateAxis(cubeGroup, arg1, 1, arg2); //Rotate
+    R.RotateAxis(cubeGroup, arg1, 2*(ran_num%2)-1 , arg2); //Rotate
 
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
         canvas.width = window.innerWidth * pixelRatio;
@@ -345,7 +352,7 @@ function makeInstanceCube() { //Create and initialize 27 cubes
 
                 const angle = { x: 0, y: 0, z: 0 };
                 const storePosition = { x: 0, y: 0, z: 0, stored: false };
-                const rotAxisYMatrix = math.matrix([
+               /* const rotAxisYMatrix = math.matrix([
                     [1, 0, 0],
                     [0, 1, 0],
                     [0, 0, 1]
@@ -355,14 +362,14 @@ function makeInstanceCube() { //Create and initialize 27 cubes
                     [0, 1, 0],
                     [0, 0, 1]
                 ]);
-                const AxisDeterm = 0;
-                const rotTotal = 0;
+                const AxisDeterm = 0;*/
+                const axisDirection=math.matrix([[1,0,0],[0,1,0],[0,0,1]]);
                 cubeGroup[i + 1][j + 1][k + 1] = {
                     cube, //Object contains cube element
 
                     storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
                     angle, //store the rotation angle while rotation of PI/2
-                    rotTotal
+                    axisDirection
                     /*  rotAxisYMatrix,   
                       rotAxisZMatrix,
                       AxisDeterm*/ //

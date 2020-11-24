@@ -1,7 +1,5 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
-import { controls, renderer, camera, scene, cubeGroup } from './RubixCube.js';
-
-
+import { scene } from './RubixCube.js';
 /*const quaternion = new THREE.Quaternion();
 quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Matthreejs object3d click eventh.PI / 2);*/
 
@@ -9,74 +7,25 @@ quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Matthreejs object3d clic
 /*let countexe = 0;*/
 let count = 0;
 let resetCount = 1;
-
-
-const rotXmatrix = math.matrix([
+/*const rotXmatrix = math.matrix([
     [1, 0, 0],
     [0, 0, -1],
     [0, 1, 0]
-]);
-const rev_rotXmatrix = math.matrix([
-    [1, 0, 0],
-    [0, 0, 1],
-    [0, -1, 0]
 ]);
 const rotYmatrix = math.matrix([
     [0, 0, 1],
     [0, 1, 0],
     [-1, 0, 0]
 ]);
-const rev_rotYmatrix = math.matrix([
-    [0, 0, -1],
-    [0, 1, 0],
-    [1, 0, 0]
-]);
 const rotZmatrix = math.matrix([
     [0, 1, 0],
     [-1, 0, 0],
     [0, 0, 1]
-]);
-const rev_rotZmatrix = math.matrix([
-    [0, -1, 0],
-    [1, 0, 0],
-    [0, 0, 1]
-]);
-let transMatrix;
-
-let i = 0;
-let countExecute = 0;
-let axisName;
-let clockwise;
-let value;
-let needExecute;
-let Initialized = false;
-export function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, needExecuteParam) {
-    if (!Initialized) {
-        console.log("initialized");
-        axisName = axisNameParam;
-        clockwise = clockwiseParam;
-        value = valueParam;
-        needExecute = needExecuteParam;
-        Initialized = true;
-    }
-    if (i++ == 60) { //Reset when rotates PI/2
-        i = 1;
-        countExecute++;
-    }
-    if (countExecute == needExecute) {
-        i = 0;
-        countExecute = 0;
-        Initialized = false;
-        return false; //To check if it's running or not
-    }
-    RotateAxis(cubeGroup, axisName, clockwise, value);
-    controls.update(); //Update
-    renderer.render(scene, camera); //render to display on screen
-    requestAnimationFrame(RotateAxisRender); // No parameter come in
-}
+]);*/
 
 export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
     count++;
+    /*    countexe++;*/
     cubeGroup.forEach((cubeinPlane) => {
         cubeinPlane.forEach((cubeinLine) => {
             cubeinLine.forEach((cubeElement) => {
@@ -105,12 +54,12 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                             scene.attach(cubeElement.cube); //Assential to display in screen
 
                             if (count == 60) { //When Rotate PI/2
+
                                 cubeElement.stored = false;
                                 //cubeElement.cube.rotation.y -= Math.PI / 120;
                                 cubeElement.cube.position.y = Math.round(cubeElement.cube.position.y);
                                 cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
-                                transMatrix=clockwise==1?rotXmatrix:rev_rotXmatrix;
-                                cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+
                                 /*cubeElement.rotAxisZMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisZMatrix);
                                 cubeElement.rotAxisYMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisYMatrix);*/
 
@@ -175,13 +124,12 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                             }*/
 
                             if (count == 60) {
+
                                 cubeElement.stored = false;
                                 cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
                                 cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
 
                                 /*  cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);*/
-                                transMatrix=clockwise==1?rotYmatrix:rev_rotYmatrix;
-                                cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
 
                                 cubeElement.angle.y = 0;
                                 pivot.rotation.set(0, 0, 0);
@@ -208,7 +156,6 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                                      +math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 1)) * 2 +
                                      math.inv(cubeElement.rotAxisZMatrix).subset(math.index(2, 2)) * 4;*/
                             }
-
                             cubeElement.angle.z += clockwise * Math.PI / 120;
                             cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) * cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) * cubeElement.storePosition.x;
                             cubeElement.cube.position.x = Math.sin(cubeElement.angle.z) * cubeElement.storePosition.y + Math.cos(cubeElement.angle.z) * cubeElement.storePosition.x;
@@ -226,10 +173,6 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                                 cubeElement.stored = false;
                                 cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
                                 cubeElement.cube.position.y = Math.round(cubeElement.cube.position.y);
-                                
-                                transMatrix=clockwise==1?rotZmatrix:rev_rotZmatrix;
-                                cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
-
                                 cubeElement.angle.z = 0;
                                 pivot.rotation.set(0, 0, 0);
                                 pivot.updateMatrixWorld();
@@ -269,6 +212,7 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                         cubeElement.angle.x += clockwise * Math.PI / 120; //Store angle of each cube element's rotation
                         cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.storePosition.z - Math.sin(cubeElement.angle.x) * cubeElement.storePosition.y;
                         cubeElement.cube.position.y = Math.sin(cubeElement.angle.x) * cubeElement.storePosition.z + Math.cos(clockwise * cubeElement.angle.x) * cubeElement.storePosition.y;
+                        cubeElement.rotTotal+=clockwise;
                         //By this you can get better accurracy than---> 
                         //--->cubeElement.cube.position.z = Math.cos(cubeElement.angle.x) * cubeElement.cube.position.z - Math.sin(cubeElement.angle.x) * cubeElement.cube.position.y;
 
@@ -307,7 +251,7 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                         cubeElement.angle.y += clockwise * Math.PI / 120;
                         cubeElement.cube.position.x = Math.cos(cubeElement.angle.y) * cubeElement.storePosition.x - Math.sin(cubeElement.angle.y) * cubeElement.storePosition.z;
                         cubeElement.cube.position.z = Math.sin(cubeElement.angle.y) * cubeElement.storePosition.x + Math.cos(cubeElement.angle.y) * cubeElement.storePosition.z;
-                        cubeElement.rotTotal += clockwise;
+                        cubeElement.rotTotal+=clockwise;
 
                         pivot.attach(cubeElement.cube);
                         pivot.rotation.y -= clockwise * Math.PI / 120;
@@ -344,7 +288,7 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                         cubeElement.angle.z += clockwise * Math.PI / 120;
                         cubeElement.cube.position.y = Math.cos(cubeElement.angle.z) * cubeElement.storePosition.y - Math.sin(cubeElement.angle.z) * cubeElement.storePosition.x;
                         cubeElement.cube.position.x = Math.sin(cubeElement.angle.z) * cubeElement.storePosition.y + Math.cos(cubeElement.angle.z) * cubeElement.storePosition.x;
-                        cubeElement.rotTotal += clockwise;
+                        cubeElement.rotTotal+=clockwise;
 
                         pivot.attach(cubeElement.cube);
                         pivot.rotation.z -= clockwise * Math.PI / 120;
