@@ -285,7 +285,7 @@ function rotate_X_1() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 3) {
+    if (step2_1_count == 4) {
         i = 0;
         step2_1_count = 0;
         step2_1_execute();
@@ -344,7 +344,7 @@ function rotate_X_0_1() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 2) {
+    if (step2_1_count == 3) {
         i = 0;
         step2_1_count = 0;
         step2_1_execute();
@@ -535,38 +535,99 @@ function rotate_Y_1() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 2) {
+    if (step2_1_count == 6) {
         i = 0;
         step2_1_count = 0;
         step2_1_execute();
         return;
     }
-    R.RotateAxis("Y", 1, 1);
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 1:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 3:
+             R.RotateAxis("Y", -1, -1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+         case 5:
+            R.RotateAxis("X", 1, 1);
+            break;
+    }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_Y_1);
 }
 
 function rotate_Y_2() {
-    if (i++ == 60) { //Reset when rotates PI/2
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 5) {
         i = 0;
+        step2_1_count = 0;
         step2_1_execute();
         return;
     }
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 3:
+             R.RotateAxis("X", 1, 1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+    }
 
-    R.RotateAxis("Y", -1, 1);
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_Y_2);
 }
 
 function rotate_Y_3() {
-    if (i++ == 60) { //Reset when rotates PI/2
+     if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 5) {
         i = 0;
+        step2_1_count = 0;
         step2_1_execute();
         return;
     }
-    R.RotateAxis("Y", 1, 1);
+     switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", 1, -1);
+            break;
+        case 1:
+            R.RotateAxis("Z", 1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 3:
+             R.RotateAxis("X", 1, 1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+    }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_Y_3);
@@ -846,7 +907,7 @@ function rotate_minusZ_0_2() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 6) {
+    if (step2_1_count == 5) {
         i = 0;
         step2_1_count = 0;
         step2_1_execute();
@@ -854,22 +915,19 @@ function rotate_minusZ_0_2() {
     }
     switch (step2_1_count) {
         case 0:
-            R.RotateAxis("X", -1, 1);
+            R.RotateAxis("Z", -1, 1);
             break;
         case 1:
-            R.RotateAxis("Y", 1, -1);
+            R.RotateAxis("Z", -1, 1);
             break;
         case 2:
-            R.RotateAxis("Y", 1, -1);
+            R.RotateAxis("X", -1, 1);
             break;
         case 3:
-            R.RotateAxis("X", -1, -1);
+            R.RotateAxis("Z", -1, -1);
             break;
         case 4:
-            R.RotateAxis("X", 1, 1);
-            break;
-        case 5:
-            R.RotateAxis("X", 1, 1);
+            R.RotateAxis("Z", -1, -1);
             break;
     }
 
