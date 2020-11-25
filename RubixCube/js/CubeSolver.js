@@ -164,7 +164,7 @@ const step2_1_execute = () => {
             break;
         default:
             Control.rotateCube("Y", 1, function() {
-                console.log("return Count " + step2_1_count);
+                console.log("return Count " + step2_1Count);
             });
             break;
             //step2_1Count = 0;
@@ -202,6 +202,41 @@ const step2_2_execute = () => {
             break;
         default:
              Control.rotateCube("Y", 1, function() {
+                console.log("return Count " + step2_1Count);
+            });
+            break;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    if (countRender++ == 59) {
+        countRender = 0;
+        console.log("case: " + step2_1Count + "Rotation over ");
+        if (step2_1Count++ == 3){
+            step2_1Count = 0;
+            //step3_execute();
+        }
+        return;
+    }
+
+    requestAnimationFrame(step2_2_execute);
+
+}
+
+
+/*const step3_execute = () => {
+    switch (step2_1Count) {
+        case 0:
+            console.log("turn~~~ " + countRender);
+            Control.rotateCube("Y", 1, function() { step2_2(2, 2, 0); });
+            break;
+        case 1:
+            Control.rotateCube("Y", 1, function() { step2_2(0, 2, 0); });
+            break;
+        case 2:
+            Control.rotateCube("Y", 1, function() { step2_2(0, 2, 2); });
+            break;
+        default:
+             Control.rotateCube("Y", 1, function() {
                 console.log("return Count " + step2_1_count);
             });
             break;
@@ -211,13 +246,21 @@ const step2_2_execute = () => {
     if (countRender++ == 59) {
         countRender = 0;
         console.log("case: " + count + "Rotation over ");
-        if (step2_1Count++ == 3) step2_1Count = 0;
+        if (step2_1Count++ == 4){
+            step2_1Count = 0;
+            step3_execute();
+        }
         return;
     }
 
-    requestAnimationFrame(step2_2_execute);
+    requestAnimationFrame(step3_execute);
 
 }
+*/
+
+
+
+
 
 export const step2_1 = (i, j, k) => {
     console.log("step2 called");
@@ -1749,10 +1792,10 @@ function rotate_step2_minusZ_3() {
         case 1:
             R.RotateAxis("X", -1, 1);
             break;
-        case 0:
+        case 2:
             R.RotateAxis("Y", -1, -1);
             break;
-        case 1:
+        case 3:
             R.RotateAxis("X", 1, 1);
             break;
     }
