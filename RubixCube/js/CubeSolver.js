@@ -201,10 +201,10 @@ const step2_2_execute = () => {
             Control.rotateCube("Y", 1, function() { step2_2(0, 2, 2); });
             break;
         default:
-            //console.log("return count: "+step2_1Count);
-            step2_1Count = 0;
-            step2_2_execute();
-            return;
+             Control.rotateCube("Y", 1, function() {
+                console.log("return Count " + step2_1_count);
+            });
+            break;
     }
     controls.update();
     renderer.render(scene, camera);
@@ -305,65 +305,63 @@ export const step2_2 = (i, j, k) => {
     if (matrix.subset(math.index(1, 0)) == 1) { //Facing +X
         console.log("in step2_2 x");
 
-        if (cube.position.y == 1) { //checked
+        if (cube.position.y == 1) { 
             if (cube.position.z == 1) rotate_step2_X_1();
-            else rotate_step2_X_2(); //have too check!!!!!!!!!!!!!!
+            else rotate_step2_X_2();  //right
 
         } else if (cube.position.y == -1) {
             if (cube.position.z == 1) rotate_step2_X_3(); //basic
-            else rotate_step2_X_4(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            else rotate_step2_X_4(); //maybe right
         }
     } else if (matrix.subset(math.index(1, 0)) == -1) { //Facing -X
         console.log("in step2_2 -x");
 
-        if (cube.position.y == 1) { //checked
+        if (cube.position.y == 1) { 
             if (cube.position.z == 1) rotate_step2_minusX_1();
-            else rotate_step2_minusX_3(); //have too check!!!!!!!!!!!!!!
-
+            else rotate_step2_minusX_2();  //RIGHT!
         } else if (cube.position.y == -1) {
             if (cube.position.z == 1) rotate_step2_minusX_3(); //basic
-            else rotate_step2_minusX_4(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            else rotate_step2_minusX_4(); 
         }
     } else if (matrix.subset(math.index(1, 1)) == 1) { //Facing +Y axis
         console.log("in step2_2 y");
-        if (cube.position.z == 1) { //checked
-            if (cube.position.x == 1) step2_2_execute();
-            else rotate_step2_Y_1(); //have too check!!!!!!!!!!!!!!
-
+        if (cube.position.z == 1) { 
+            if (cube.position.x == 1) step2_2_execute(); //right!
+            else rotate_step2_Y_1();    //right!
         } else {
-            if (cube.position.x == 1) rotate_step2_Y_2(); //HAS LINK
-            else rotate_step2_Y_3(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            if (cube.position.x == 1) rotate_step2_Y_2();//right!!!!!
+            else rotate_step2_Y_3(); 
         }
 
     } else if (matrix.subset(math.index(1, 1)) == -1) { //Facing -Y axis 
         console.log("in step2_2 -y");
-        if (cube.position.z == 1) { //checked
-            if (cube.position.x == 1) rotate_step2_minusY_0(); //LINK!!
-            else rotate_step2_minusY_1(); //have too check!!!!!!!!!!!!!!
+        if (cube.position.z == 1) { 
+            if (cube.position.x == 1) rotate_step2_minusY_0();  ///right
+            else rotate_step2_minusY_1();           //right
 
         } else {
-            if (cube.position.x == 1) rotate_step2_minusY_2(); //HAS LINK
-            else rotate_step2_minusY_3(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            if (cube.position.x == 1) rotate_step2_minusY_2();  //right
+            else rotate_step2_minusY_3();   
         }
     } else if (matrix.subset(math.index(1, 2)) == 1) { //Facing Z
         console.log("in step2_2 z");
-        if (cube.position.y == 1) { //checked
-            if (cube.position.x == 1) rotate_step2_Z_0(); //LINK!!
-            else rotate_step2_Z_1(); //MINJUNCheck real!
+        if (cube.position.y == 1) { 
+            if (cube.position.x == 1) rotate_step2_Z_0(); 
+            else rotate_step2_Z_1(); //MINJUNCheck real! right!
 
         } else {
-            if (cube.position.x == 1) rotate_step2_Z_2(); //HAS LINK
-            else rotate_step2_Z_3(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            if (cube.position.x == 1) rotate_step2_Z_2(); 
+            else rotate_step2_Z_3(); 
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
         console.log("in step2_2 -z");
-        if (cube.position.y == 1) { //checked
+        if (cube.position.y == 1) { 
             if (cube.position.x == 1) rotate_step2_minusZ_0();
-            else rotate_step2_minusZ_1(); //MINJUNCheck real!
+            else rotate_step2_minusZ_1(); //MINJUNCheck real! right!
 
         } else {
             if (cube.position.x == 1) rotate_step2_minusZ_2(); //HAS LINK
-            else rotate_step2_minusZ_3(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
+            else rotate_step2_minusZ_3(); 
         }
     }
 }
@@ -1101,7 +1099,7 @@ function rotate_step2_X_2() {
     if (step2_1_count == 3) {
         i = 0;
         step2_1_count = 0;
-        rotate_step2_minusY_(); //check????????????????????
+        rotate_step2_minusY_0(); //check????????????????????
         return;
     }
     switch (step2_1_count) {
@@ -1155,7 +1153,7 @@ function rotate_step2_X_3() {
 function rotate_step2_X_4() {
     if (i++ == 60) {
         i = 0;
-        rotate_step2_Z_(); //check????????????????????
+        rotate_step2_Z_2(); //check????????????????????
         return;
     }
     R.RotateAxis("Y", 1, -1);
@@ -1170,14 +1168,14 @@ function rotate_step2_minusX_1() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 3) {
+    if (step2_1_count == 5) {
         i = 0;
         step2_1_count = 0;
         step2_2_execute();
         return;
     }
     switch (step2_1_count) {
-        case 0:
+        /*case 0:
             R.RotateAxis("X", 1, 0);
             break;
         case 1:
@@ -1185,7 +1183,23 @@ function rotate_step2_minusX_1() {
             break;
         case 2:
             R.RotateAxis("X", -1, 0);
+            break;*/    //RIGHT WAY BUT BELOW IS BETTER TO LEARN
+        case 0:
+            R.RotateAxis("X", -1, -1);
             break;
+        case 1:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 2:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 3:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+
     }
 
     controls.update(); //Update
@@ -1206,22 +1220,22 @@ function rotate_step2_minusX_2() {
     }
     switch (step2_1_count) {
         case 0:
-            R.RotateAxis("Z", 1, 0);
+            R.RotateAxis("X", 1, -1);
             break;
         case 1:
-            R.RotateAxis("X", -1, -1);
+            R.RotateAxis("Y", 1, -1);
             break;
         case 2:
-            R.RotateAxis("X", 1, 0);
+            R.RotateAxis("X", -1, -1);
             break;
         case 3:
             R.RotateAxis("Z", 1, 1);
             break;
         case 4:
-            R.RotateAxis("X", -1, 0);
+             R.RotateAxis("Y", 1, -1);
             break;
         case 5:
-            R.RotateAxis("Z", -1, 0);
+            R.RotateAxis("Z", -1, 1);
             break;
     }
 
@@ -1288,10 +1302,10 @@ function rotate_step2_Y_1() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 3) {
+    if (step2_1_count == 7) {
         i = 0;
         step2_1_count = 0;
-        rotate_step2_X_3();
+        step2_2_execute();
         return;
     }
     switch (step2_1_count) {
@@ -1302,7 +1316,19 @@ function rotate_step2_Y_1() {
             R.RotateAxis("Y", -1, -1);
             break;
         case 2:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 3:
             R.RotateAxis("X", 1, -1);
+            break;
+        case 4:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 6:
+            R.RotateAxis("Z", -1, 1);
             break;
     }
 
@@ -1320,7 +1346,7 @@ function rotate_step2_Y_2() {
     if (step2_1_count == 3) {
         i = 0;
         step2_1_count = 0;
-        rotate_step2_Z_3();
+        rotate_step2_Z_2();
         return;
     }
     switch (step2_1_count) {
@@ -1330,6 +1356,7 @@ function rotate_step2_Y_2() {
         case 1:
             R.RotateAxis("Y", 1, -1);
             break;
+
         case 2:
             R.RotateAxis("Z", -1, -1);
             break;
@@ -1345,10 +1372,10 @@ function rotate_step2_Y_3() {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 3) {
+    if (step2_1_count == 6) {
         i = 0;
         step2_1_count = 0;
-        rotate_step2_Z_4();
+        step2_2_execute();
         return;
     }
     switch (step2_1_count) {
@@ -1356,9 +1383,18 @@ function rotate_step2_Y_3() {
             R.RotateAxis("Z", -1, -1);
             break;
         case 1:
-            R.RotateAxis("Y", -1, -1);
+            R.RotateAxis("Y", 1, -1);
             break;
         case 2:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 4:
+            R.RotateAxis("Z", -1, 1);
+            break;
+        case 5:
             R.RotateAxis("Z", 1, -1);
             break;
     }
@@ -1376,7 +1412,7 @@ function rotate_step2_minusY_0() {
     if (step2_1_count == 4) {
         i = 0;
         step2_1_count = 0;
-        rotate_step2_Z_4();
+        rotate_step2_Z_3();
         return;
     }
     switch (step2_1_count) {
@@ -1542,7 +1578,7 @@ function rotate_step2_Z_2() {
         case 2:
             R.RotateAxis("Y", -1, -1);
             break;
-        case 1:
+        case 3:
             R.RotateAxis("X", 1, 1);
             break;
     }
