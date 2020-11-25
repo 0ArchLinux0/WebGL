@@ -164,9 +164,9 @@ function animate(time) {
         clickCount++;
         return;
     }
-    console.log("called animate");
-     //R.RotateAxis(arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
-     switch (clickCount) {
+    //console.log("called animate");
+     R.RotateAxis(arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
+     /*switch (clickCount) {
          case 0:R.RotateAxis("X", -1, 1);
              // statements_1
              break;
@@ -174,7 +174,7 @@ function animate(time) {
              // statements_def
              break;
          case 2: R.RotateAxis("Z", 1, 1);
-     }
+     }*/
       //Rotate in Axis arg1, at row index arg2
     //R.RotateAxisRender("X", ANTICLOCKWISE, -1,4);
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
