@@ -200,18 +200,29 @@ const step2_2_execute = () => {
         case 2:
             Control.rotateCube("Y", 1, function() { step2_2(0, 2, 2); });
             break;
-        default:
+        case 3:
             Control.rotateCube("Y", 1, function() {
                 // console.log("return Count " + step2_1Count);
             });
+            break;
+        case 4:
+            Control.rotateCube("X", ANTICLOCKWISE, function() {});
+            break;
+        case 5:
+            Control.rotateCube("X", ANTICLOCKWISE, function() {});
             break;
     }
     controls.update();
     renderer.render(scene, camera);
     if (countRender++ == 59) {
         countRender = 0;
+        if (step2_1Count == 3||step2_1Count==4) {
+            step2_1Count++;
+            step2_2_execute();
+            return;
+        }
         //console.log("case: " + step2_1Count + "Rotation over ");
-        if (step2_1Count++ == 3) {
+        if (step2_1Count++ == 5) {
             step2_1Count = 0;
             step3(2, 1, 2);
         }
@@ -227,26 +238,16 @@ let step3Count = 0;
 const step3_execute = () => {
     switch (step3Count) {
         case 0:
-            Control.rotateCube("X", ANTICLOCKWISE, function() {
-                console.log("return Count " + step3Count);
-
-            });
-            break;
-        case 1:
-            Control.rotateCube("X", ANTICLOCKWISE, function() {
-                console.log("return Count " + step3Count);
-
-            });
-            break;
-        case 2:
             Control.rotateCube("Y", 1, function() { step3(2, 1, 0); });
             break;
-        case 3:
+        case 1:
             Control.rotateCube("Y", 1, function() { step3(0, 1, 0); });
             break;
-        case 4:
+        case 2:
             Control.rotateCube("Y", 1, function() { step3(0, 1, 2); });
             break;
+        case 3:
+            Control.rotateCube("Y", 1, function() {});
             /*console.log("turn~~~ " + countRender);
             Control.rotateCube("Y", 1, function() { step2_2(2, 2, 0); });
             break;*/
@@ -266,12 +267,12 @@ const step3_execute = () => {
     renderer.render(scene, camera);
     if (countRender++ == 59) {
         countRender = 0;
-        if (step3Count == 0) {
+       /* if (step3Count == 0) {
             step3Count++;
             step3_execute();
             return;
-        }
-        if (step3Count++ == 4) {
+        }*/
+        if (step3Count++ == 3) {
             step3Count = 0;
             //step3_execute();
         }
@@ -438,7 +439,7 @@ export const step3 = (i, j, k) => {
     //console.log("step2 called");
     const cube = cubeGroup[i][j][k].cube; //Start with cube [1,1,0]
     const matrix = cubeGroup[i][j][k].axisDirection;
-    console.log("in step3" + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
+    console.log("in step3 " + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
     if (matrix.subset(math.index(2, 0)) == 1) { //If cube element's Axis Z Facing +X(Orange face at start)
         console.log("in step3 x");
         if (cube.position.y == 1) {
