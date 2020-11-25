@@ -350,7 +350,7 @@ export const step2_2 = (i, j, k) => {
             else rotate_step2_Z_1(); //MINJUNCheck real! right!
 
         } else {
-            if (cube.position.x == 1) rotate_step2_Z_2(); 
+            if (cube.position.x == 1) rotate_step2_Z_2();  //RIGHT
             else rotate_step2_Z_3(); 
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
