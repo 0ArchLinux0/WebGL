@@ -152,7 +152,7 @@ function requestRenderShuffle() {
 let i = 0;
 let arg1 = String.fromCharCode(88 + ran_num); //88 is 'X'
 let arg2 = (parseInt(Math.random() * 100) % 3 - 1);;
-
+let clickCount=0;
 function animate(time) {
     isRunning = true; //Prevent malfunctioning when click multiple times in a row,'isRunning=undefiend' in line 159 causes  when button clicked
     if (i++ == 60) { //R.RotateAxis rotates PI/120 so we need 60times of execution to rotate PI/2 radians.
@@ -161,11 +161,21 @@ function animate(time) {
         isRunning = undefined; //When rotating PI/2 is done,notify it is not runnig anymore
         arg1 = String.fromCharCode(88 + ran_num); //Random char among X,Y,Z
         arg2 = (parseInt(Math.random() * 100) % 3 - 1); //Random int from -1 to 1
+        clickCount++;
         return;
     }
     console.log("called animate");
-     //R.RotateAxis(cubeGroup, arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
-     R.RotateAxis(cubeGroup, "Y", 1, 1); //Rotate in Axis arg1, at row index arg2
+     //R.RotateAxis(arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
+     switch (clickCount) {
+         case 0:R.RotateAxis("X", -1, 1);
+             // statements_1
+             break;
+         case 1:R.RotateAxis("Z", 1, 1);
+             // statements_def
+             break;
+         case 2: R.RotateAxis("Z", 1, 1);
+     }
+      //Rotate in Axis arg1, at row index arg2
     //R.RotateAxisRender("X", ANTICLOCKWISE, -1,4);
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
         canvas.width = window.innerWidth * pixelRatio;
@@ -231,7 +241,7 @@ function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute
         return;
     }
     buttonDown = true;
-    R.RotateAxis(cubeGroup, arg1, 2*(ran_num%2)-1 , arg2); //Rotate
+    R.RotateAxis(arg1, 2*(ran_num%2)-1 , arg2); //Rotate
 
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
         canvas.width = window.innerWidth * pixelRatio;
@@ -363,13 +373,15 @@ function makeInstanceCube() { //Create and initialize 27 cubes
                     [0, 0, 1]
                 ]);
                 const AxisDeterm = 0;*/
+                const rotArray={x:0,y:0,z:0};
                 const axisDirection=math.matrix([[1,0,0],[0,1,0],[0,0,1]]);
                 cubeGroup[i + 1][j + 1][k + 1] = {
                     cube, //Object contains cube element
 
                     storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
                     angle, //store the rotation angle while rotation of PI/2
-                    axisDirection
+                    axisDirection,
+                    rotArray
                     /*  rotAxisYMatrix,   
                       rotAxisZMatrix,
                       AxisDeterm*/ //

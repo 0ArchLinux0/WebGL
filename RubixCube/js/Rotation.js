@@ -32,13 +32,13 @@ const rev_rotYmatrix = math.matrix([
     [1, 0, 0]
 ]);
 const rotZmatrix = math.matrix([
-    [0, 1, 0],
-    [-1, 0, 0],
+    [0, -1, 0],
+    [1, 0, 0],
     [0, 0, 1]
 ]);
 const rev_rotZmatrix = math.matrix([
-    [0, -1, 0],
-    [1, 0, 0],
+    [0, 1, 0],
+    [-1, 0, 0],
     [0, 0, 1]
 ]);
 let transMatrix;
@@ -50,7 +50,7 @@ let clockwise;
 let value;
 let needExecute;
 let Initialized = false;
-export function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, needExecuteParam) {
+export async function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, needExecuteParam) {
     if (!Initialized) {
         console.log("initialized");
         axisName = axisNameParam;
@@ -75,7 +75,7 @@ export function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, need
     requestAnimationFrame(RotateAxisRender); // No parameter come in
 }
 
-export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
+export const RotateAxis = (axisName, clockwise, value) => {
     count++;
     cubeGroup.forEach((cubeinPlane) => {
         cubeinPlane.forEach((cubeinLine) => {
@@ -113,7 +113,7 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                                 cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
                                 /*cubeElement.rotAxisZMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisZMatrix);
                                 cubeElement.rotAxisYMatrix = math.multiply(rotXmatrix, cubeElement.rotAxisYMatrix);*/
-
+                                cubeElement.rotArray.x+=clockwise;
                                 cubeElement.angle.x = 0;
                                 pivot.rotation.set(0, 0, 0);
                                 pivot.updateMatrixWorld();
@@ -182,6 +182,7 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                                 /*  cubeElement.rotAxisZMatrix = math.multiply(cubeElement.rotAxisZMatrix, rotYmatrix);*/
                                 transMatrix=clockwise==1?rotYmatrix:rev_rotYmatrix;
                                 cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+                                cubeElement.rotArray.y+=clockwise;
 
                                 cubeElement.angle.y = 0;
                                 pivot.rotation.set(0, 0, 0);
@@ -229,6 +230,7 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
                                 
                                 transMatrix=clockwise==1?rotZmatrix:rev_rotZmatrix;
                                 cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+                                cubeElement.rotArray.z+=clockwise;
 
                                 cubeElement.angle.z = 0;
                                 pivot.rotation.set(0, 0, 0);
@@ -252,7 +254,7 @@ export const RotateAxis = (cubeGroup, axisName, clockwise, value) => {
 let pivot = new THREE.Object3D(); //Create Ancestor Object3D
 pivot.rotation.set(0, 0, 0);
 
-export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole cube
+export const RotateAll = (axisName, clockwise) => { //Rotate the hole cube
     count++;
     cubeGroup.forEach((cubeinPlane) => {
         cubeinPlane.forEach((cubeinLine) => {
@@ -284,6 +286,10 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                             cubeElement.cube.position.y = Math.round(cubeElement.cube.position.y);
                             cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
 
+                            transMatrix=clockwise==1?rotXmatrix:rev_rotXmatrix;
+                            cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+                            cubeElement.rotArray.x+=clockwise;
+                            
                             cubeElement.angle.x = 0;
                             pivot.rotation.set(0, 0, 0);
                             pivot.updateMatrixWorld();
@@ -320,6 +326,10 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                             cubeElement.cube.position.z = Math.round(cubeElement.cube.position.z);
                             cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
 
+                            transMatrix=clockwise==1?rotYmatrix:rev_rotYmatrix;
+                            cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+                            cubeElement.rotArray.y+=clockwise;
+
                             cubeElement.angle.y = 0;
                             pivot.rotation.set(0, 0, 0);
                             pivot.updateMatrixWorld();
@@ -355,6 +365,11 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
                             cubeElement.stored = false;
                             cubeElement.cube.position.x = Math.round(cubeElement.cube.position.x);
                             cubeElement.cube.position.y = Math.round(cubeElement.cube.position.y);
+                            
+                            transMatrix=clockwise==1?rotZmatrix:rev_rotZmatrix;
+                            cubeElement.axisDirection=math.multiply(cubeElement.axisDirection,transMatrix);
+                            cubeElement.rotArray.z+=clockwise;
+
                             cubeElement.angle.z = 0;
                             pivot.rotation.set(0, 0, 0);
                             pivot.updateMatrixWorld();
@@ -370,4 +385,5 @@ export const RotateAll = (cubeGroup, axisName, clockwise) => { //Rotate the hole
         });
 
     });
+    return false;
 }
