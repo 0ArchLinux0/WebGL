@@ -165,16 +165,19 @@ const step2_1_execute = () => {
         default:
             Control.rotateCube("Y", 1, function() {
                 console.log("return Count " + step2_1_count);
-            });break;
+            });
+            break;
             //step2_1Count = 0;
-
     }
     controls.update();
     renderer.render(scene, camera);
     if (countRender++ == 59) {
         countRender = 0;
         console.log("case: " + step2_1Count + "Rotation over ");
-        if(step2_1Count++==3) step2_1Count=0;
+        if (step2_1Count++ == 3) {
+            step2_1Count = 0;
+            step2_2(2,2,2);
+        }
         return;
 
     }
@@ -189,13 +192,13 @@ const step2_2_execute = () => {
     switch (step2_1Count) {
         case 0:
             console.log("turn~~~ " + countRender);
-            Control.rotateCube("Y", 1, function() { step2_1(1, 2, 0); });
+            Control.rotateCube("Y", 1, function() { step2_2(2, 2, 0); });
             break;
         case 1:
-            Control.rotateCube("Y", 1, function() { step2_1(0, 2, 1); });
+            Control.rotateCube("Y", 1, function() { step2_2(0, 2, 0); });
             break;
         case 2:
-            Control.rotateCube("Y", 1, function() { step2_1(1, 2, 2); });
+            Control.rotateCube("Y", 1, function() { step2_2(0, 2, 2); });
             break;
         default:
             //console.log("return count: "+step2_1Count);
@@ -208,11 +211,11 @@ const step2_2_execute = () => {
     if (countRender++ == 59) {
         countRender = 0;
         console.log("case: " + count + "Rotation over ");
-        step2_1Count++;
+        if (step2_1Count++ == 3) step2_1Count = 0;
         return;
     }
 
-    requestAnimationFrame(step2_1_execute);
+    requestAnimationFrame(step2_2_execute);
 
 }
 
@@ -283,7 +286,7 @@ export const step2_1 = (i, j, k) => {
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
         console.log("-z");
         if (cube.position.y == 1) {
-            rotate_minusZ_1(); /////////////////minjun checked
+            rotate_minusZ_1(); /////////////////minjun checked DDDDDDDDDD
         } else if (cube.position.y == -1) {
             rotate_minusZ_2(); ////////////////minjun checked
         } else if (cube.position.x == 1) {
@@ -354,14 +357,13 @@ export const step2_2 = (i, j, k) => {
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
         console.log("in step2_2 -z");
-        if (cube.position.y == 1) {
-            rotate_minusZ_1(); //////!!!!!!!!!!!!!!!!!!!!!!checked
-        } else if (cube.position.y == -1) {
-            rotate_minusZ_2(); ////////////////
-        } else if (cube.position.x == 1) {
-            rotate_minusZ_0_1(); //d
-        } else if (cube.position.x == -1) {
-            rotate_minusZ_0_2(); //d
+        if (cube.position.y == 1) { //checked
+            if (cube.position.x == 1) rotate_step2_minusZ_0();
+            else rotate_step2_minusZ_1(); //MINJUNCheck real!
+
+        } else {
+            if (cube.position.x == 1) rotate_step2_minusZ_2(); //HAS LINK
+            else rotate_step2_minusZ_3(); //have too check!!!!!!!!!!!!!! rotate_step2_Z_
         }
     }
 }
@@ -1549,4 +1551,178 @@ function rotate_step2_Z_2() {
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_step2_Z_2);
+}
+
+function rotate_step2_Z_3() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 5) {
+        i = 0;
+        step2_1_count = 0;
+        step2_2_execute();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 1:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 4:
+            R.RotateAxis("Z", -1, 1);
+            break;
+    }
+
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(rotate_step2_Z_3);
+}
+
+function rotate_step2_minusZ_0() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 5) {
+        i = 0;
+        step2_1_count = 0;
+        step2_2_execute();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", 1, -1);
+            break;
+        case 1:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 3:
+            R.RotateAxis("Z", -1, 1);
+            break;
+        case 4:
+            R.RotateAxis("Z", -1, -1);
+            break;
+    }
+
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(rotate_step2_minusZ_0);
+}
+
+function rotate_step2_minusZ_1() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 6) {
+        i = 0;
+        step2_1_count = 0;
+        step2_2_execute();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", -1, -1);
+            break;
+        case 1:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 2:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Z", 1, -1);
+            break;
+    }
+
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(rotate_step2_minusZ_1);
+}
+
+function rotate_step2_minusZ_2() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 3) {
+        i = 0;
+        step2_1_count = 0;
+        step2_2_execute();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("Y", 1, -1);
+            break;
+        case 0:
+            R.RotateAxis("Z", -1, 1);
+            break;
+    }
+
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(rotate_step2_minusZ_2);
+}
+
+function rotate_step2_minusZ_3() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 4) {
+        i = 0;
+        step2_1_count = 0;
+        step2_2_execute();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 1:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 0:
+            R.RotateAxis("Y", -1, -1);
+            break;
+        case 1:
+            R.RotateAxis("X", 1, 1);
+            break;
+    }
+
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(rotate_step2_minusZ_3);
 }
