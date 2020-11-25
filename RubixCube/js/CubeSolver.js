@@ -405,13 +405,13 @@ function rotate_X_1() {
         case 0:
             R.RotateAxis("X", -1, 1);
             break;
-        case 0:
+        case 1:
             R.RotateAxis("Y", 1, 1)
             break;
-        case 1:
+        case 2:
             R.RotateAxis("Z", -1, 1);
             break;
-        case 2:
+        case 3:
             R.RotateAxis("Y", -1, 1);
             break;
     }
