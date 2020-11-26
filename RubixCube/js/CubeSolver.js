@@ -163,7 +163,8 @@ const step2_1_execute = () => {
             Control.rotateCube("Y", 1, function() { step2_1(1, 2, 2); });
             break;
         case 3:
-            Control.rotateCube("Y", 1, function() {});break;
+            Control.rotateCube("Y", 1, function() {});
+            break;
         default:
             return;
 
@@ -301,7 +302,7 @@ const step4_execute = () => {
 
     requestAnimationFrame(step4_execute);
 */
-console.log("end");
+    console.log("end");
 }
 
 /*
@@ -320,32 +321,7 @@ export const step4_getRightFace = () => {
     }
 }*/
 
-export const step4 = () => {
-    const cube = [cubeGroup[1][0][2], cubeGroup[0][0][1], cubeGroup[1][0][0], cubeGroup[2][0][1]]; //Start with cube [1,1,0]
-    let rightFaceBinarySum=0;
-    let exponential=1;
-    for(let i=0; i<4; i++){
-        console.log(cube[i].axisDirection.subset(math.index(1, 1)));
-        if(cube[i].axisDirection.subset(math.index(1, 1)) == -1){
-            console.log("check: ");
-            rightFaceBinarySum+=exponential;
-        console.log("exponential "+exponential);
-        }
-        
-        exponential*=2;
-    }
-        console.log("result"+rightFaceBinarySum);
-    switch(rightFaceBinarySum){
-        case 0:step4_execute();
-        case 3:step4_Y_2(function(){step4_vToLine();});
-        case 5:step4_Y_1(function(){step4_lineToCross();});
-        case 6:step4_minusY_1(function(){step4_vToLine();});
-        case 9:step4_Y_1(function(){step4_vToLine();});
-        case 10:step4_execute();
-        case 12:step4_vToLine();
-        //case 15:step5_execute();
-    }
-}
+
 
 
 
@@ -2549,7 +2525,7 @@ function rotate_step3_minusZ_3() {
 /////////////////////////////////////////////////////////////////////step 4///////////////////////////////////////////////////
 
 function step4_minusY_1(callback) {
-     if (i++ == 60) {
+    if (i++ == 60) {
         i = 0;
         callback();
         return;
@@ -2562,7 +2538,7 @@ function step4_minusY_1(callback) {
 }
 
 function step4_Y_1(callback) {
-     if (i++ == 60) {
+    if (i++ == 60) {
         i = 0;
         callback();
         return;
@@ -2574,8 +2550,8 @@ function step4_Y_1(callback) {
     requestAnimationFrame(step4_Y_1);
 }
 
-function step4_Y_2(callback) {
-      if (i++ == 60) {
+function step4_Y_2(callback){
+    if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
@@ -2593,7 +2569,7 @@ function step4_Y_2(callback) {
 }
 
 function step4_lineToCross() {
-      if (i++ == 60) {
+    if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
@@ -2603,7 +2579,7 @@ function step4_lineToCross() {
         step4_execute();
         return;
     }
-    
+
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("Z", 1, 1);
@@ -2631,7 +2607,7 @@ function step4_lineToCross() {
 }
 
 function step4_vToLine() {
-      if (i++ == 60) {
+    if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
@@ -2641,7 +2617,7 @@ function step4_vToLine() {
         step4_lineToCross();
         return;
     }
-    
+
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("Z", 1, 1);
@@ -2669,7 +2645,7 @@ function step4_vToLine() {
 }
 
 function step4_makeV() {
-      if (i++ == 60) {
+    if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
@@ -2679,7 +2655,7 @@ function step4_makeV() {
         step4_vToLine();
         return;
     }
-    
+
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("Z", 1, 1);
@@ -2707,7 +2683,44 @@ function step4_makeV() {
 }
 
 
-
-
-
-
+export const step4 = () => {
+    const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
+    let rightFaceBinarySum = 0;
+    let addNum = 1;
+    for (let i = 0; i < 4; i++) {
+        console.log(cube[i].axisDirection.subset(math.index(1, 1)));
+        if (cube[i].axisDirection.subset(math.index(1, 1)) == -1) {
+            if(cube[i].cube.position.z==1) addNum=1;
+            else if(cube[i].cube.position.z==-1) addNum=4;
+            else if(cube[i].cube.position.x==1) addNum=2;
+            else addNum=8;
+            console.log("check: ");
+            rightFaceBinarySum += addNum;
+        }
+    }
+    console.log("result" + rightFaceBinarySum);
+    switch (rightFaceBinarySum) {
+        case 0:
+            step4_makeV();
+            break;
+        case 3:
+            step4_Y_2(function() {/* step4_vToLine(); console.log("callback!");*/});
+            break;
+        case 5:
+            step4_Y_1(function() { /*step4_lineToCross(); console.log("callback!");*/});
+            break;
+        case 6:
+            step4_minusY_1(function() {/* step4_vToLine();console.log("callback!");*/ });
+            break;
+        case 9:
+            step4_Y_1(function() { /*step4_vToLine();console.log("callback!"); }*/});
+            break;
+        case 10:
+            step4_execute();
+            break;
+        case 12:
+            step4_vToLine();
+            break;
+            //case 15:step5_execute();
+    }
+}
