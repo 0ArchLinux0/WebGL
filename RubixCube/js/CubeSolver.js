@@ -216,7 +216,7 @@ const step2_2_execute = () => {
     renderer.render(scene, camera);
     if (countRender++ == 59) {
         countRender = 0;
-        if (step2_1Count == 3||step2_1Count==4) {
+        if (step2_1Count == 3 || step2_1Count == 4) {
             step2_1Count++;
             step2_2_execute();
             return;
@@ -224,7 +224,7 @@ const step2_2_execute = () => {
         //console.log("case: " + step2_1Count + "Rotation over ");
         if (step2_1Count++ == 5) {
             step2_1Count = 0;
-            step3(2, 1, 2);
+            step3(2, 1, 0);
         }
         return;
     }
@@ -238,16 +238,17 @@ let step3Count = 0;
 const step3_execute = () => {
     switch (step3Count) {
         case 0:
-            Control.rotateCube("Y", 1, function() { step3(2, 1, 0); });
+            Control.rotateCube("Y", 1, function() { step3(2, 1, 2); });
             break;
         case 1:
-            Control.rotateCube("Y", 1, function() { step3(0, 1, 0); });
+            Control.rotateCube("Y", 1, function() { step3(0, 1, 2); });
             break;
         case 2:
-            Control.rotateCube("Y", 1, function() { step3(0, 1, 2); });
+            Control.rotateCube("Y", 1, function() { step3(0, 1, 0); });
             break;
         case 3:
             Control.rotateCube("Y", 1, function() {});
+            break;
             /*console.log("turn~~~ " + countRender);
             Control.rotateCube("Y", 1, function() { step2_2(2, 2, 0); });
             break;*/
@@ -267,11 +268,11 @@ const step3_execute = () => {
     renderer.render(scene, camera);
     if (countRender++ == 59) {
         countRender = 0;
-       /* if (step3Count == 0) {
-            step3Count++;
-            step3_execute();
-            return;
-        }*/
+        /* if (step3Count == 0) {
+             step3Count++;
+             step3_execute();
+             return;
+         }*/
         if (step3Count++ == 3) {
             step3Count = 0;
             //step3_execute();
@@ -440,52 +441,55 @@ export const step3 = (i, j, k) => {
     const cube = cubeGroup[i][j][k].cube; //Start with cube [1,1,0]
     const matrix = cubeGroup[i][j][k].axisDirection;
     console.log("in step3 " + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
-    if (matrix.subset(math.index(2, 0)) == 1) { //If cube element's Axis Z Facing +X(Orange face at start)
+    console.log(matrix);
+    if (matrix.subset(math.index(1, 0)) == 1) { //If cube element's Axis Z Facing +X(Orange face at start)
         console.log("in step3 x");
-        if (cube.position.y == 1) {
-            rotate_step3_X_1();
-        } else if (cube.position.z == 1) {
-            rotate_step3_X_2();
-        } else {
-            rotate_step3_X_3();
+        if (cube.position.z == 1) {
+         rotate_step3_Z_1();
+        } else{
+        rotate_step3_Y_3();
         }
-    } else if (matrix.subset(math.index(2, 0)) == -1) { //If cube element's Axis Z Facing -X
+    } else if (matrix.subset(math.index(1, 0)) == -1) { //If cube element's Axis Z Facing -X
         console.log("in step3 -x");
 
-        if (cube.position.y == 1) {
-            rotate_step3_minusX_1();
-        } else if (cube.position.z == 1) {
-            rotate_step3_minusX_2();
-        } else {
-            rotate_step3_minusX_3();
+       if (cube.position.z == 1) {
+         rotate_step3_Y_2();
+        } else{
+         rotate_step3_minusZ_1();
         }
-    } else if (matrix.subset(math.index(2, 1)) == 1) { //If cube element's Axis Z Facing +Y axis
+    } else if (matrix.subset(math.index(1, 1)) == 1) { //If cube element's Axis Z Facing +Y axis
         console.log("in step3 y");
         if (cube.position.x == 1) {
-            rotate_step3_Y_1();
-        } else if (cube.position.z == 1) {
-            rotate_step3_Y_2();
-        } else if (cube.position.z==-1) {
-            rotate_step3_Y_3();
+            if(cube.position.z==1) rotate_step3_X_2();
+            else rotate_step3_minusZ_2();
         } else{
-            rotate_step3_Y_4();
-        }
-    }  else if (matrix.subset(math.index(2, 2)) == 1) { //If cube element's Axis Z Facing Z
-        if (cube.position.y == 1) {
-            rotate_step3_Z_1();
-        } else if (cube.position.x == -1) {
-            rotate_step3_Z_2();
+            if(cube.position.z==1) rotate_step3_Z_2();
+            else rotate_step3_minusX_3();
+        } 
+    } 
+    else if (matrix.subset(math.index(1, 1)) == -1) { //If cube element's Axis Z Facing -Y axis
+        console.log("in step3 -y");
+        if (cube.position.x == 1) {
+            if(cube.position.z==1) step3_execute();
+            else  rotate_step3_X_3();
+        } else{
+            if(cube.position.z==1) rotate_step3_minusX_2();
+            else rotate_step3_minusZ_3();
+        } 
+    }
+    else if (matrix.subset(math.index(1, 2)) == 1) { //If cube element's Axis Z Facing Z
+        console.log("in step3 z");
+        if (cube.position.x == 1) {
+            rotate_step3_Y_1();
         } else {
-            step3_execute();
+            rotate_step3_minusX_1();
         }
-    } else if (matrix.subset(math.index(2, 2)) == -1) { //If cube element's Axis Z Facing -Z
+    } else if (matrix.subset(math.index(1, 2)) == -1) { //If cube element's Axis Z Facing -Z
         console.log("in step3 -z");
-        if (cube.position.y == 1) {
-            rotate_step3_minusZ_1();
-        } else if (cube.position.x == 1) {
-            rotate_step3_minusZ_2();
+        if (cube.position.x == 1) {
+            rotate_step3_X_1();
         } else {
-            rotate_step3_minusZ_3();
+            rotate_step3_Y_4();
         }
     }
 }
@@ -2196,7 +2200,7 @@ function rotate_step3_Y_2() {
 }
 
 function rotate_step3_Y_3() {
-     if (i++ == 60) {
+    if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
@@ -2237,14 +2241,14 @@ function rotate_step3_Y_3() {
 }
 
 function rotate_step3_Y_4() {
-      if (i++ == 60) {
+    if (i++ == 60) {
         i = 0;
         rotate_step3_Y_1(); //check????????????????????
         return;
     }
 
     R.RotateAxis("Y", 1, 1);
-           
+
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_step3_Y_4);
