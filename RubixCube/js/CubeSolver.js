@@ -321,7 +321,7 @@ export const step4_getRightFace = () => {
 }*/
 
 export const step4 = () => {
-    const cube = [cubeGroup[1][0][2], cubeGroup[2][0][1], cubeGroup[1][0][0], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
+    const cube = [cubeGroup[1][0][2], cubeGroup[0][0][1], cubeGroup[1][0][0], cubeGroup[2][0][1]]; //Start with cube [1,1,0]
     let rightFaceBinarySum=0;
     let exponential=1;
     for(let i=0; i<4; i++){
@@ -339,7 +339,7 @@ export const step4 = () => {
         case 0:step4_execute();
         case 3:step4_Y_2(function(){step4_vToLine();});
         case 5:step4_Y_1(function(){step4_lineToCross();});
-        case 6:step4_minusY_1(function(){step4_lineToCross();});
+        case 6:step4_minusY_1(function(){step4_vToLine();});
         case 9:step4_Y_1(function(){step4_vToLine();});
         case 10:step4_execute();
         case 12:step4_vToLine();
