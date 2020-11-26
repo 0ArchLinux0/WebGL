@@ -237,7 +237,7 @@ const step2_2_execute = () => {
 
 let step3Count = 0;
 
-const step3_execute = () => {
+const step3_execute = () => {   //Complete Second row of Cube
     switch (step3Count) {
         case 0:
             Control.rotateCube("Y", 1, function() { step3(2, 1, 2); });
@@ -270,62 +270,118 @@ const step3_execute = () => {
 
 }
 
+const step4_1 = () => {         //Makes all the edges be in the right place.
 
-const step4_execute = () => {
-    /*switch (step4Count) {
-        case 0:
-            Control.rotateCube("Y", 1, function() { step3(2, 1, 2); });
-            break;
-        case 1:
-            Control.rotateCube("Y", 1, function() { step3(0, 1, 2); });
-            break;
-        case 2:
-            Control.rotateCube("Y", 1, function() { step3(0, 1, 0); });
-            break;
-        case 3:
-            Control.rotateCube("Y", 1, function() {});
-            break;
-        default:
-            return;
-    }
-    controls.update();
-    renderer.render(scene, camera);
-    if (countRender++ == 59) {
-        countRender = 0;
+    const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
+    const initPosition = [{ x: 0, z: 1 }, { x: 1, z: 0 }, { x: 0, z: -1 }, { x: -1, z: 0 }];
 
-        if (step4Count++ == 3) {
-            step4Count = 0;
-            //step3_execute();
+    let count = 0;
+    let rightFaceBinarySum = 0;
+    let addNum = 0;
+
+    for (let i = 0; i < 4; i++) {
+        if (cube[i].cube.position.x == initPosition[i].x && cube[i].cube.position.z == initPosition[i].z) {
+            count++;
+            if (cube[i].cube.position.z == 1) addNum = 1;
+            else if (cube[i].cube.position.z == -1) addNum = 4;
+            else if (cube[i].cube.position.x == 1) addNum = 2;
+            else addNum = 8;
+            console.log("check: ");
+            rightFaceBinarySum += addNum;
         }
+    }
+    console.log(count+"final result"+rightFaceBinarySum);
+    if (count == 4) { console.log("4 matches"); return; } 
+    else if (count == 2) { 
+        switch(rightFaceBinarySum){
+            case 3: 
+                step4_1_minusY_1(function(){console.log("have to turn");step4_1_set();});break;
+            case 5:
+                step4_1_minusY(function(){console.log("what ever");step4_1_set_2();});break;
+            case 6: 
+                step4_1_set();console.log("6");break;
+            case 9: 
+                step4_1_Y_2(function(){console.log("have to turn");step4_1_set();});break;
+            case 10:
+                step4_1_set_2();
+            case 12: 
+                step4_1_Y_1(function(){console.log("have to turn");step4_1_set();});break;
+
+        } 
+        console.log("2 matches");
         return;
     }
-
-    requestAnimationFrame(step4_execute);
-*/
-    console.log("end");
+    R.RotateAxis("Y", 1, 1);
+    console.log("rotate count "+i);
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1);
 }
 
-/*
-export const step4_getRightFace = () => {
-    const cube = [cubeGroup[1][0][2], cubeGroup[2][0][1], cubeGroup[1][0][0], cubeGroup[0][0][1]] //Start with cube [1,1,0]
-    let rightFaceBinarySum;
-    let exponential=1;
-    for(let i=0; i<4; i++){
-        rightFaceBinarySum+=cube[i].axisDirection.subset(math.index(1, 1)) == 1? exponential: 0
-        exponential*=2;
+const step4_2 = () => {
+    const cube = [cubeGroup[2][0][0], cubeGroup[2][0][2], cubeGro[0][2][2], cubeGroup[0][2][0]]; //Start with cube [1,1,0]
+    const initPosition = [{ x: 1, z: 1 }, { x: 1, z: -1 }, { x: -1, z: -1 }, { x: -1, z: 1 }] ;
+    let count = 0;
+    for (let i = 0; i < 4; i++) {
+        if (cube[i].cube.position.x == initPosition[i].x && cube[i].cube.position.z == initPosition[i].z) {
+            count++;
+        }
     }
-    switch(rightFaceNumber){
+    if(count==0){
+
+    }
+    else if(count==2){
+
+    }
+    else{
+
+    }
+}
+
+
+const step4 = () => {   //Make edges face Y Axis
+    const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
+    let rightFaceBinarySum = 0;
+    let addNum = 0;
+    for (let i = 0; i < 4; i++) {
+        console.log(cube[i].axisDirection.subset(math.index(1, 1)));
+        if (cube[i].axisDirection.subset(math.index(1, 1)) == -1) {
+            if (cube[i].cube.position.z == 1) addNum = 1;
+            else if (cube[i].cube.position.z == -1) addNum = 4;
+            else if (cube[i].cube.position.x == 1) addNum = 2;
+            else addNum = 8;
+            console.log("check: ");
+            rightFaceBinarySum += addNum;
+        }
+    }
+    console.log("result" + rightFaceBinarySum);
+    switch (rightFaceBinarySum) {
         case 0:
+            step4_noMatch();
+            break;
         case 3:
-        case 
+            step4_Y_2(function() { step4_vToCross(); });
+            break;
+        case 5:
+            step4_Y_1(function() { step4_lineToCross(); });
+            break;
+        case 6:
+            step4_minusY_1(function() { step4_vToCross(); });
+            break;
+        case 9:
+            step4_Y_1(function() { step4_vToCross(); });
+            break;
+        case 10:
+            step4_lineToCross();
+            break;
+        case 12:
+            step4_vToCross();
+            break;
+        case 15:
+            step4_1_set();
+            //case 15:step5_execute();
     }
-}*/
-
-
-
-
-
-
+}
 
 export const step2_1 = (i, j, k) => {
     console.log("step2 called");
@@ -2523,25 +2579,37 @@ function rotate_step3_minusZ_3() {
 }
 
 /////////////////////////////////////////////////////////////////////step 4///////////////////////////////////////////////////
-
-function step4_minusY_1(callback) {
-if (i++ == 60) {
+let storeCallback;
+let isInitialized = false;
+const step4_minusY_1 = (callback) => {
+    if (i++ == 60) {
         i = 0;
-        callback();
+        isInitialized = false;
+        storeCallback();
         return;
     }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
+    }
     R.RotateAxis("Y", -1, 1);
-
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(step4_minusY_1);
 }
 
-function step4_Y_1(callback) {
+const step4_Y_1 = (callback) => {
     if (i++ == 60) {
         i = 0;
-        callback();
+        isInitialized = false;
+        storeCallback();
         return;
+    }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
     }
     R.RotateAxis("Y", 1, 1);
 
@@ -2550,7 +2618,7 @@ function step4_Y_1(callback) {
     requestAnimationFrame(step4_Y_1);
 }
 
-function step4_Y_2(callback){
+const step4_Y_2 = (callback) => {
     if (i++ == 60) {
         i = 1;
         step2_1_count++;
@@ -2558,8 +2626,14 @@ function step4_Y_2(callback){
     if (step2_1_count == 2) {
         i = 0;
         step2_1_count = 0;
-        callback();
+        isInitialized = false;
+        storeCallback();
         return;
+    }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
     }
     R.RotateAxis("Y", 1, 1);
 
@@ -2576,7 +2650,7 @@ function step4_lineToCross() {
     if (step2_1_count == 6) {
         i = 0;
         step2_1_count = 0;
-        step4_execute();
+        step4_1();
         return;
     }
 
@@ -2606,15 +2680,15 @@ function step4_lineToCross() {
     requestAnimationFrame(step4_lineToCross);
 }
 
-function step4_vToLine() {
+function step4_vToCross() {
     if (i++ == 60) {
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 6) {
+    if (step2_1_count == 10) {
         i = 0;
         step2_1_count = 0;
-        step4_lineToCross();
+        step4_1();
         return;
     }
 
@@ -2635,92 +2709,308 @@ function step4_vToLine() {
             R.RotateAxis("Y", -1, 1);
             break;
         case 5:
-            R.RotateAxis("Z", -1, 1);
-            break;
-    }
-
-    controls.update(); //Update
-    renderer.render(scene, camera); //render to display on screen
-    requestAnimationFrame(step4_vToLine);
-}
-
-function step4_makeV() {
-    if (i++ == 60) {
-        i = 1;
-        step2_1_count++;
-    }
-    if (step2_1_count == 6) {
-        i = 0;
-        step2_1_count = 0;
-        step4_vToLine();
-        return;
-    }
-
-    switch (step2_1_count) {
-        case 0:
-            R.RotateAxis("Z", 1, 1);
-            break;
-        case 1:
             R.RotateAxis("X", 1, 1);
-            break;
-        case 2:
-            R.RotateAxis("Y", 1, 1);
-            break;
-        case 3:
-            R.RotateAxis("X", -1, 1);
-            break;
-        case 4:
-            R.RotateAxis("Y", -1, 1);
-            break;
-        case 5:
-            R.RotateAxis("Z", -1, 1);
-            break;
-    }
-
-    controls.update(); //Update
-    renderer.render(scene, camera); //render to display on screen
-    requestAnimationFrame(step4_makeV);
-}
-
-
-export const step4 = () => {
-    const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
-    let rightFaceBinarySum = 0;
-    let addNum = 1;
-    for (let i = 0; i < 4; i++) {
-        console.log(cube[i].axisDirection.subset(math.index(1, 1)));
-        if (cube[i].axisDirection.subset(math.index(1, 1)) == -1) {
-            if(cube[i].cube.position.z==1) addNum=1;
-            else if(cube[i].cube.position.z==-1) addNum=4;
-            else if(cube[i].cube.position.x==1) addNum=2;
-            else addNum=8;
-            console.log("check: ");
-            rightFaceBinarySum += addNum;
-        }
-    }
-    console.log("result" + rightFaceBinarySum);
-    switch (rightFaceBinarySum) {
-        case 0:
-            step4_makeV();
-            break;
-        case 3:
-            step4_Y_2(function() {/* step4_vToLine(); console.log("callback!");*/});
-            break;
-        case 5:
-            step4_Y_1(function() { /*step4_lineToCross(); console.log("callback!");*/});
             break;
         case 6:
-            step4_minusY_1(function() {/* step4_vToLine();console.log("callback!");*/ });
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 7:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 8:
+            R.RotateAxis("Y", -1, 1);
             break;
         case 9:
-            step4_Y_1(function() { /*step4_vToLine();console.log("callback!"); }*/});
+            R.RotateAxis("Z", -1, 1);
+            break;
+    }
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_vToCross);
+}
+
+function step4_noMatch() {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 18) {
+        i = 0;
+        step2_1_count = 0;
+        step4_1();
+        return;
+    }
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 4:
+            R.RotateAxis("Y", -1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Z", -1, 1);
+            break;
+        case 6:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 7:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 8:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 9:
+            R.RotateAxis("X", 1, 1);
             break;
         case 10:
-            step4_execute();
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 11:
+            R.RotateAxis("X", -1, 1);
             break;
         case 12:
-            step4_vToLine();
+            R.RotateAxis("Y", -1, 1);
             break;
-            //case 15:step5_execute();
+        case 13:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 14:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 15:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 16:
+            R.RotateAxis("Y", -1, 1);
+            break;
+        case 17:
+            R.RotateAxis("Z", -1, 1);
+            break;
+
     }
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_noMatch);
+}
+//////////////////////////////////////////step4_1///////////////////////
+
+const step4_1_minusY_1 = (callback) => {
+    if (i++ == 60) {
+        i = 0;
+        isInitialized = false;
+        storeCallback();
+        return;
+    }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
+    }
+    R.RotateAll("Y", -1, 1);
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_minusY_1);
+}
+
+const step4_1_Y_1 = (callback) => {
+    if (i++ == 60) {
+        i = 0;
+        isInitialized = false;
+        storeCallback();
+        return;
+    }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
+    }
+    R.RotateAll("Y", 1, 1);
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_Y_1);
+}
+
+const step4_1_Y_2 = (callback) => {
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 2) {
+        i = 0;
+        step2_1_count = 0;
+        isInitialized = false;
+        storeCallback();
+        return;
+    }
+    if (isInitialized == false) {
+        isInitialized = true;
+        storeCallback = callback;
+        console.log("callback stored");
+    }
+    R.RotateAll("Y", 1, 1);
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_Y_2);
+}
+
+
+function step4_1_set() {    //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+        console.log("step count: "+step2_1_count);
+    }
+    if (step2_1_count == 9) {
+        i = 0;
+        step2_1_count = 0;
+        //step4_1();
+        console.log("return");
+        return;
+    }
+    console.log("set endddddd");
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 6:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 7:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 8:
+            R.RotateAxis("Y", 1, 1);
+            break;
+    }
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_set);
+}
+
+/*function step4_1_set_2() {    //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 9) {
+        i = 0;
+        step2_1_count = 0;
+        step4_1();
+        return;
+    }
+
+    switch (step2_1_count) {
+        
+        case 0:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 6:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 7:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 8:
+            R.RotateAxis("Y", 1, 1);
+            break;
+    }
+
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_set_2);
+}*/
+
+
+function step4_1_set_2() {    //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+        console.log("step count222: "+step2_1_count);
+    }
+    if (step2_1_count == 10) {
+        i = 0;
+        step2_1_count = 0;
+        //step4_1();
+        console.log("return2222");
+        return;
+    }
+    console.log("set endddddd22222");
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 1:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 2:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 3:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 4:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 5:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 6:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 7:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 8:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 9:
+            R.RotateAll("Y",-1,1);
+    }
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step4_1_set_2);
 }
