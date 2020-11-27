@@ -49,7 +49,7 @@ export const solveCubeStart = () => { //Solve Cube when solve button clicked
 
     controls.update();
     renderer.render(scene, camera);
-    return true;
+    requestAnimationFrame(solveCubeStart);
 
 }
 
@@ -237,7 +237,7 @@ const step2_2_execute = () => {
 
 let step3Count = 0;
 
-const step3_execute = () => {   //Complete Second row of Cube
+const step3_execute = () => { //Complete Second row of Cube
     switch (step3Count) {
         case 0:
             Control.rotateCube("Y", 1, function() { step3(2, 1, 2); });
@@ -270,7 +270,7 @@ const step3_execute = () => {   //Complete Second row of Cube
 
 }
 
-const step4_1 = () => {         //Makes all the edges be in the right place.
+const step4_1 = () => { //Makes all the edges be in the right place.
 
     const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
     const initPosition = [{ x: 0, z: 1 }, { x: 1, z: 0 }, { x: 0, z: -1 }, { x: -1, z: 0 }];
@@ -286,60 +286,246 @@ const step4_1 = () => {         //Makes all the edges be in the right place.
             else if (cube[i].cube.position.z == -1) addNum = 4;
             else if (cube[i].cube.position.x == 1) addNum = 2;
             else addNum = 8;
-            console.log("check: ");
             rightFaceBinarySum += addNum;
         }
-    }
-    console.log(count+"final result"+rightFaceBinarySum);
-    if (count == 4) { console.log("4 matches"); return; } 
-    else if (count == 2) { 
-        switch(rightFaceBinarySum){
-            case 3: 
-                step4_1_minusY_1(function(){console.log("have to turn");step4_1_set();});break;
-            case 5:
-                step4_1_minusY(function(){console.log("what ever");step4_1_set_2();});break;
-            case 6: 
-                step4_1_set();console.log("6");break;
-            case 9: 
-                step4_1_Y_2(function(){console.log("have to turn");step4_1_set();});break;
-            case 10:
-                step4_1_set_2();break;
-            case 12: 
-                step4_1_Y_1(function(){console.log("have to turn");step4_1_set();});break;
 
-        } 
-        console.log("2 matches");
+    }
+    console.log("in step4 edge in right place" + rightFaceBinarySum);
+    if (count == 4) {
+        step5();
+        return;
+    }
+    if (count == 2) {
+        switch (rightFaceBinarySum) {
+            case 3:
+                step4_1_minusY_1(function() { step4_1_set(); });
+                break;
+            case 5:
+                step4_1_set_2();
+                break;
+            case 6:
+                step4_1_set();
+                break;
+            case 9:
+                step4_1_Y_2(function() { step4_1_set(); });
+                break;
+            case 10:
+                step4_1_minusY(function() { step4_1_set_2(); });
+                break;
+            case 12:
+                step4_1_Y_1(function() { step4_1_set(); });
+                break;
+        }
         return;
     }
     R.RotateAxis("Y", 1, 1);
-    console.log("rotate count "+i);
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(step4_1);
 }
 
-const step4_2 = () => {
+/*const step5 = () => {
     const cube = [cubeGroup[2][0][0], cubeGroup[2][0][2], cubeGro[0][2][2], cubeGroup[0][2][0]]; //Start with cube [1,1,0]
-    const initPosition = [{ x: 1, z: 1 }, { x: 1, z: -1 }, { x: -1, z: -1 }, { x: -1, z: 1 }] ;
+    const initPosition = [{ x: 1, z: 1 }, { x: 1, z: -1 }, { x: -1, z: -1 }, { x: -1, z: 1 }];
     let count = 0;
+    let rightFaceBinarySum = 0;
+    let addNum = 0;
+    let X_FacesTotal = 0;
+    let Z_FacesTotal = 0;
+    let X_FacesBinarySum=0;
+    let Z_FacesBinarySum=0;
+
     for (let i = 0; i < 4; i++) {
-        if (cube[i].cube.position.x == initPosition[i].x && cube[i].cube.position.z == initPosition[i].z) {
+        if (cube[i].cube.position.z == 1) addNum = 1;
+        else if (cube[i].cube.position.z == -1) addNum = 4;
+        else if (cube[i].cube.position.x == 1) addNum = 2;
+        else addNum = 8;
+        if (cube[i].axisDirection.subset(math.index(1, 1)) == -1) {
             count++;
+            rightFaceBinarySum += addNum;
+        } else if (cube[i].axisDirection.subset(math.index(1, 0)) != 0) {
+            X_FacesTotal -= cube[i].axisDirection.subset(math.index(1, 0));
+            X_FacesBinarySum+=addNum;
+        } else {
+            Z_FacesTotal -= cube[i].axisDirection.subset(math.index(1, 2));
+            Z_FacesBinarySum+=addNum;
         }
     }
-    if(count==0){
+    if (X_FacesBinarySum == 15||(X_FacesBinarySum==12&&Z_FacesTotal!=0) {
+        step5_CompleteFace_1();
+    } else if (Z_FacesBinarySum == 15||(X_FacesBinarySum==6&&Z_FacesBinarySum==9)) {
+         step4_Y_1(function() { step5_CompleteFace_1(); });
+    } else if(X_FacesBinarySum==9&&Z_FacesBinarySum==6){
+        step4_minusY_1(function(){ step5_CompleteFace_1();});
+    } else if (X_FacesBinarySum==3&&Z_FacesTotal!=0){
+        step4_Y_2(function(){ step5_CompleteFace_1();});
+    } else if ()){
+        step4_Y_2(function(){ step5_CompleteFace_1();});
+    }
+}*/
+let checkInitialized = false;
+let X_FacesBinarySum = 0;
+let Z_FacesBinarySum = 0;
+let visited1 = false;
+let visited2 = false;
+const step5 = () => { //Complete the Face
+    const cube = [cubeGroup[2][0][0], cubeGroup[2][0][2], cubeGroup[0][0][2], cubeGroup[0][0][0]]; //Start with cube [1,1,0]
+    /*const initPosition = [{ x: 1, z: 1 }, { x: 1, z: -1 }, { x: -1, z: -1 }, { x: -1, z: 1 }];*/
+
+    let addNum = 0;
+
+
+    if (i++ == 60) {
+        countExecute++;
+        i = 1;
+        X_FacesBinarySum = 0;
+        Z_FacesBinarySum = 0;
+        for (let j = 0; j < 4; j++) {
+            console.log("position x " + cube[j].cube.position.x + " z:" + cube[j].cube.position.z);
+            if (cube[j].cube.position.x == 1 && cube[j].cube.position.z == 1) addNum = 1;
+            else if (cube[j].cube.position.x == -1 && cube[j].cube.position.z == -1) addNum = 4;
+            else if (cube[j].cube.position.x == 1 && cube[j].cube.position.z == -1) addNum = 2;
+            else if ((cube[j].cube.position.x == -1 && cube[j].cube.position.z == 1)) addNum = 8;
+            console.log("and " + addNum);
+            console.log(cube[j].axisDirection);
+            if (cube[j].axisDirection.subset(math.index(1, 0)) != 0) {
+                X_FacesBinarySum += addNum;
+            } else if (cube[j].axisDirection.subset(math.index(1, 2)) != 0) {
+                Z_FacesBinarySum += addNum;
+            }
+        }
+    }
+    if (!checkInitialized) {
+        checkInitialized = true;
+        X_FacesBinarySum = 0;
+        Z_FacesBinarySum = 0;
+        for (let j = 0; j < 4; j++) {
+            console.log("position x " + cube[j].cube.position.x + " z:" + cube[j].cube.position.z);
+            if (cube[j].cube.position.x == 1 && cube[j].cube.position.z == 1) addNum = 1;
+            else if (cube[j].cube.position.x == -1 && cube[j].cube.position.z == -1) addNum = 4;
+            else if (cube[j].cube.position.x == 1 && cube[j].cube.position.z == -1) addNum = 2;
+            else if (cube[j].cube.position.x == -1 && cube[j].cube.position.z == 1) addNum = 8;
+            console.log("and " + addNum);
+            console.log(cube[j].axisDirection);
+            if (cube[j].axisDirection.subset(math.index(1, 0)) != 0) {
+                X_FacesBinarySum += addNum;
+            } else if (cube[j].axisDirection.subset(math.index(1, 2)) != 0) {
+                Z_FacesBinarySum += addNum;
+            }
+        }
+    }
+    console.log("step5!!!!!");
+
+    console.log("X:" + X_FacesBinarySum + "Z:" + Z_FacesBinarySum);
+    if (X_FacesBinarySum == 0 && Z_FacesBinarySum == 0) {
+        i = 0;
+        checkInitialized = false;
+        step6();
+        return;
+    } else if (!visited1 && Z_FacesBinarySum == 15 || (Z_FacesBinarySum == 12 && X_FacesBinarySum == 3)) {;
+        checkInitialized = false;
+        i = 0;
+        visited1 = true;
+        step5_CompleteFace_1();
+        return;
+    } else if (!visited2 && (Z_FacesBinarySum == 8 && X_FacesBinarySum == 2) || (Z_FacesBinarySum == 8 && X_FacesBinarySum == 5) ||
+        (Z_FacesBinarySum == 5 && X_FacesBinarySum == 8) || (Z_FacesBinarySum == 6 && X_FacesBinarySum == 0)) {
+        checkInitialized = false;
+        i = 0;
+        visited2 = true;
+        step5_CompleteFace_2();
+        return;
+    } else if (Z_FacesBinarySum == 12 && X_FacesBinarySum == 0) {
+        checkInitialized = false;
+        i = 0;
+        step5_CompleteFace_3();
+        return;
+    }
+
+    R.RotateAll("Y", 1, 1);
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step5);
+}
+
+const step6 = () => { //Makes all the edges be in the right place.
+    const cube = [cubeGroup[2][0][0], cubeGroup[2][0][2], cubeGroup[0][0][2], cubeGroup[0][0][0]]; //Start with cube [1,1,0]
+    matrix_0=math.matrix([0,0,0],[1, -1, -1],[0,0,0]);
+    matrix_1=math.matrix([0,0,0],[1, -1, 1],[0,0,0]);
+    matrix_2=math.matrix([0,0,0],[-1, -1, 1],[0,0,0]);
+    matrix_3=math.matrix([0,0,0],[-1, -1, -1],[0,0,0]);
+    const initPosition = [matrix_0,matrix_1,matrix_2,matrix_3];
+
+    /* */
+    let count = 0;
+    let storeRightCube;
+    if (i++ == 60) {
+        countExecute++;
+        i = 1;
+
+        for (let j = 0; j < 4; j++) {
+            const supposedPosition = math.multiply(initPosition[j], cube[j].axisDirection);
+            supposedX = supposedPosition.subset(math.index(1, 0));
+            supposedZ = supposedPosition.subset(math.index(1, 2));
+
+            if (cube[j].cube.position.x == supposedX && cube[j].cube.position.z == supposedZ) count++;
+
+        }
 
     }
-    else if(count==2){
+    if (!checkInitialized) {
+        checkInitialized = true;
+        for (let j = 0; j < 4; j++) {
+            const supposedPosition = math.multiply(initPosition[j], cube[j].axisDirection)
+            supposedX = supposedPosition.subset(math.index(0, 0));
+            supposedZ = supposedPosition.subset(math.index(0, 2));
 
-    }
-    else{
+            if (cube[j].cube.position.x == supposedX && cube[j].cube.position.z == supposedZ) {
+                console.log("X: "+supposedX+"Z: "+supposedZ);
+                storeRightCube = cube[j];
+                count++;
 
+            }
+        }
     }
+    /* console.log("step6!!!!!");
+   
+     console.log("X:"+X_FacesBinarySum+"Z:"+Z_FacesBinarySum);*/
+    if (count == 1) {
+        console.log("step6");
+
+        step6_helper(storeRightCube);
+        return;
+    }
+
+    R.RotateAxis("Y", 1, 1);
+    console.log("?????????????????rotate???????");
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step6);
+}
+
+const step6_helper = (storeRightCube) => { //Makes all the edges be in the right place.
+    
+    /* console.log("step6_helper!!!!!");
+   
+     console.log("X:"+X_FacesBinarySum+"Z:"+Z_FacesBinarySum);*/
+    if (count == 1) {
+        console.log("step6_helper");
+
+        step6_helper();
+        return;
+    }
+
+    R.RotateAxis("Y", 1, 1);
+    console.log("?????????????????rotate???????");
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step6_helper);
 }
 
 
-const step4 = () => {   //Make edges face Y Axis
+const step4 = () => { //Make edges face Y Axis
     const cube = [cubeGroup[1][0][0], cubeGroup[2][0][1], cubeGroup[1][0][2], cubeGroup[0][0][1]]; //Start with cube [1,1,0]
     let rightFaceBinarySum = 0;
     let addNum = 0;
@@ -378,7 +564,7 @@ const step4 = () => {   //Make edges face Y Axis
             step4_vToCross();
             break;
         case 15:
-            step4_1_set();
+            step4_1();
             //case 15:step5_execute();
     }
 }
@@ -2572,7 +2758,6 @@ function rotate_step3_minusZ_3() {
             Control.rotateCube("Y", 1, function() {});
             break;
     }
-    console.log("weired...mark!");
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(rotate_step3_minusZ_3);
@@ -2818,7 +3003,7 @@ const step4_1_minusY_1 = (callback) => {
         storeCallback = callback;
         console.log("callback stored");
     }
-    R.RotateAll("Y", -1, 1);
+    R.RotateAll("Y", -1);
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(step4_1_minusY_1);
@@ -2836,7 +3021,7 @@ const step4_1_Y_1 = (callback) => {
         storeCallback = callback;
         console.log("callback stored");
     }
-    R.RotateAll("Y", 1, 1);
+    R.RotateAll("Y", 1);
 
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
@@ -2860,7 +3045,7 @@ const step4_1_Y_2 = (callback) => {
         storeCallback = callback;
         console.log("callback stored");
     }
-    R.RotateAll("Y", 1, 1);
+    R.RotateAll("Y", 1);
 
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
@@ -2868,20 +3053,17 @@ const step4_1_Y_2 = (callback) => {
 }
 
 
-function step4_1_set() {    //Set edges of yellow face in right position
+function step4_1_set() { //Set edges of yellow face in right position
     if (i++ == 60) {
         i = 1;
         step2_1_count++;
-        console.log("step count: "+step2_1_count);
     }
     if (step2_1_count == 9) {
         i = 0;
         step2_1_count = 0;
-        //step4_1();
-        console.log("return");
+        step5();
         return;
     }
-    console.log("set endddddd");
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("X", 1, 1);
@@ -2916,69 +3098,19 @@ function step4_1_set() {    //Set edges of yellow face in right position
     requestAnimationFrame(step4_1_set);
 }
 
-/*function step4_1_set_2() {    //Set edges of yellow face in right position
+
+
+function step4_1_set_2() { //Set edges of yellow face in right position
     if (i++ == 60) {
         i = 1;
         step2_1_count++;
-    }
-    if (step2_1_count == 9) {
-        i = 0;
-        step2_1_count = 0;
-        step4_1();
-        return;
-    }
-
-    switch (step2_1_count) {
-        
-        case 0:
-            R.RotateAxis("X", 1, 1);
-            break;
-        case 1:
-            R.RotateAxis("Y", 1, 1);
-            break;
-        case 2:
-            R.RotateAxis("X", -1, 1);
-            break;
-        case 3:
-            R.RotateAxis("Y", 1, 1);
-            break;
-        case 4:
-            R.RotateAxis("X", 1, 1);
-            break;
-        case 5:
-            R.RotateAxis("Y", 1, 1);
-            break;
-        case 6:
-            R.RotateAxis("Y", 1, 1);
-            break;
-        case 7:
-            R.RotateAxis("X", -1, 1);
-            break;
-        case 8:
-            R.RotateAxis("Y", 1, 1);
-            break;
-    }
-
-    controls.update(); //Update
-    renderer.render(scene, camera); //render to display on screen
-    requestAnimationFrame(step4_1_set_2);
-}*/
-
-
-function step4_1_set_2() {    //Set edges of yellow face in right position
-    if (i++ == 60) {
-        i = 1;
-        step2_1_count++;
-        console.log("step count222: "+step2_1_count);
     }
     if (step2_1_count == 10) {
         i = 0;
         step2_1_count = 0;
-        //step4_1();
-        console.log("return2222");
+        step4_1_set();
         return;
     }
-    console.log("set endddddd22222");
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("X", 1, 1);
@@ -3004,13 +3136,165 @@ function step4_1_set_2() {    //Set edges of yellow face in right position
         case 7:
             R.RotateAxis("X", -1, 1);
             break;
-        case 8:
-            R.RotateAxis("Y", 1, 1);
-            break;
         case 9:
-            R.RotateAll("Y",-1,1);
+            R.RotateAll("Y", -1);
     }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(step4_1_set_2);
+}
+
+/////////////////////////////////////////////step5//////////////////////////////////////////////
+
+
+function step5_CompleteFace_1() { //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 10) {
+        i = 0;
+        step2_1_count = 0;
+        step5();
+        return;
+    }
+    console.log("step5 1");
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAll("X", 1);
+            break;
+        case 1:
+            R.RotateAxis("X", -1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 4:
+            R.RotateAxis("Y", -1, 1);
+            break;
+        case 5:
+            R.RotateAll("X", -1);
+            break;
+        case 6:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 7:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 8:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 9:
+            R.RotateAxis("Z", -1, 1);
+    }
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step5_CompleteFace_1);
+}
+
+function step5_CompleteFace_2() { //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 10) {
+        i = 0;
+        step2_1_count = 0;
+        step5();
+        return;
+    }
+    console.log("step5 2");
+
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAll("X", 1);
+            break;
+        case 1:
+            R.RotateAxis("X", -1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 4:
+            R.RotateAxis("Y", -1, 1);
+            break;
+        case 5:
+            R.RotateAll("X", -1);
+            break;
+        case 6:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 7:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 8:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 9:
+            R.RotateAxis("Z", -1, 1);
+            //??????????
+            /*case 10:
+                R.RotateAll("Y",1);
+            case 11:
+                R.RotateAll("Y",1);*/
+    }
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step5_CompleteFace_2);
+}
+
+function step5_CompleteFace_3() { //Set edges of yellow face in right position
+    if (i++ == 60) {
+        i = 1;
+        step2_1_count++;
+    }
+    if (step2_1_count == 10) {
+        i = 0;
+        step2_1_count = 0;
+        visited1 = false;
+        visited2 = false;
+        step6();
+        return;
+    }
+    console.log("step5 3");
+    switch (step2_1_count) {
+        case 0:
+            R.RotateAll("X", 1);
+            break;
+        case 1:
+            R.RotateAxis("X", -1, -1);
+            break;
+        case 2:
+            R.RotateAxis("Y", 1, 1);
+            break;
+        case 3:
+            R.RotateAxis("X", -1, 1);
+            break;
+        case 4:
+            R.RotateAxis("Y", -1, 1);
+            break;
+        case 5:
+            R.RotateAll("X", -1);
+            break;
+        case 6:
+            R.RotateAxis("X", 1, -1);
+            break;
+        case 7:
+            R.RotateAxis("Z", 1, 1);
+            break;
+        case 8:
+            R.RotateAxis("X", 1, 1);
+            break;
+        case 9:
+            R.RotateAxis("Z", -1, 1);
+    }
+    controls.update(); //Update
+    renderer.render(scene, camera); //render to display on screen
+    requestAnimationFrame(step5_CompleteFace_3);
 }

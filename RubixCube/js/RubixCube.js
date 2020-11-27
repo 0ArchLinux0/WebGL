@@ -212,14 +212,17 @@ const solveCubeButtonListener = (time) => { //Solve Cube when solve button click
     camera.position.y=4;
     camera.position.z=4;
     camera.lookAt(-1,-1,-1);
+    isSolving=true;
+    buttonDown=true;
 
-
-    isSolving=CubeSolver.solveCubeStart();
-    buttonDown =isSolving;
-    if(isSolving)requestAnimationFrame(solveCubeButtonListener);
-    //else CubeSolver.step2_1();
+    CubeSolver.solveCubeStart();
+    
 }
    
+export const solveCubeEndNotify=()=>{
+    isSolving=false;
+    buttonDown=false;
+}
 
 let exeCount = 0;
 
@@ -277,16 +280,13 @@ const onUp = (e) => {
    // console.log("onup");
     const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
     // console.log(v);
-   // console.log("bdown" + buttonDown);
+    console.log("bdown" + buttonDown);
     if (buttonDown || ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
     //    console.log("return");
-        buttonDown = false;
         return;
     }
     animate();
-    isRunning = true;
     isDown = false;
-    buttonDown = false;
     //}, 50);
 };
 
