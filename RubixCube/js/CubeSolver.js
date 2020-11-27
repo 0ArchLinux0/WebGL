@@ -21,7 +21,7 @@ let needExecuteInitialized = false;
 //let isSolving = false;
 
 export const solveCubeStart = () => { //Solve Cube when solve button clicked
-    console.log("in first"+needExecuteInitialized);
+    console.log("in first"+needExecuteInitialized+"count is "+count+"count Execute is: "+countExecute+" needExecute is "+needExecute);
     if (i++ == 60) { //Reset when rotates PI/2
         i = 1;
         countExecute++;
@@ -54,7 +54,7 @@ export const solveCubeStart = () => { //Solve Cube when solve button clicked
 }
 
 export const step1_1 = () => { //Make white face look up
-
+    console.log("step1_1 called Initialized "+Initialized);
     if (!Initialized) { //Store init position just one time
         Initialized = true;
         storedX = cubeGroup[1][2][1].cube.position.x; //Position of the white face center cube
@@ -74,6 +74,7 @@ export const step1_1 = () => { //Make white face look up
         case 1: //If white face center cube is on it's right position
             Execute = 0;
             Initialized = false;
+            count=0;
             return 0;
         case -1: //On opsite side of cube.InitPosition  Have to rotate one more time
             Control.rotateCube("X", CLOCKWISE, function() {});
@@ -88,6 +89,8 @@ export const step1_1 = () => { //Make white face look up
 }
 
 const step1_2 = () => {
+        console.log("step1_2 called");
+
     let needExecute;
     if (!Initialized) { //Store init position just one time
         Initialized = true;
@@ -127,7 +130,6 @@ const Render_step1_2 = () => {
         countExecute = 0;
         needExecute = 1;
         needExecuteInitialized = false;
-        //  console.log("execute step2 1");
         step2_1(2, 2, 1);
         return;
     }
@@ -135,7 +137,6 @@ const Render_step1_2 = () => {
     if (!needExecuteInitialized) {
         needExecuteInitialized = true;
         needExecute = step1_2(cubeGroup);
-        //   console.log("need init " + needExecute);
     } else {
         step1_2(cubeGroup);
     }
@@ -337,7 +338,6 @@ const step5 = () => { //Complete the Face
 
 
     if (i++ == 60) {
-        countExecute++;
         i = 1;
         X_FacesBinarySum = 0;
         Z_FacesBinarySum = 0;
