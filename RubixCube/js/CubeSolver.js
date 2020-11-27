@@ -303,7 +303,7 @@ const step4_1 = () => {         //Makes all the edges be in the right place.
             case 9: 
                 step4_1_Y_2(function(){console.log("have to turn");step4_1_set();});break;
             case 10:
-                step4_1_set_2();
+                step4_1_set_2();break;
             case 12: 
                 step4_1_Y_1(function(){console.log("have to turn");step4_1_set();});break;
 
