@@ -79,6 +79,7 @@ const setMaterialColors = (x, y, z, materials) => { //Create Materials with Colo
         []
     ]
 ]; //Better look than initializeing with for loop
+export const cubeRotateState=[math.matrix([[1,0,0],[0, 1, 0],[0,0,1]])];
 
 makeInstanceCube();
 
@@ -128,15 +129,15 @@ function requestRender() { //Check if Render is running
     }
 
 }
-/*
-    function requestRender_shuffle_once() { //Check if Render is running
 
-        if (!renderRequested) {
-            renderRequested = true;
-            requestAnimationFrame(animate_click); //Callback render
+    function requestRender_animate() { //Check if Render is running
+
+        if (!isRunning) {
+            isRunning = true;
+            requestAnimationFrame(animate); //Callback render
         }
 
-    }*/
+    }
 
 let isRunning = false;
 let ran_num = parseInt(Math.random() * 3 - 0.1);
@@ -207,7 +208,7 @@ let needExecuteInitialized = false;
 let isSolving = false;
 
 const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
-    if (isRunning) return;
+    if (isRunning||isSolving) return;
     camera.position.x=4;
     camera.position.y=4;
     camera.position.z=4;
@@ -221,7 +222,7 @@ const solveCubeButtonListener = (time) => { //Solve Cube when solve button click
    
 export const solveCubeEndNotify=()=>{
     isSolving=false;
-    buttonDown=false;
+    buttonDown=false;;
 }
 
 let exeCount = 0;
@@ -270,6 +271,7 @@ function onDown(e) {
     pos_down[0] = e.pageX;
     pos_down[1] = e.pageY;
     isDown = true;
+    setTimeout(()=>{isDown=false}, 1200);
     //console.log("ondown");
 }
 
@@ -281,11 +283,13 @@ const onUp = (e) => {
     const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
     // console.log(v);
     console.log("bdown" + buttonDown);
-    if (buttonDown || ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20)) {
-    //    console.log("return");
+    //If more than 1.2sec passes or mouse is dragged or something is running return.
+    if (!isDown||(buttonDown||((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20))) {
+    //    console.log("return");    
         return;
     }
-    animate();
+    if(isMobile) requestRender_animate();
+    else animate();
     isDown = false;
     //}, 50);
 };
@@ -373,7 +377,6 @@ function makeInstanceCube() { //Create and initialize 27 cubes
                     [0, 0, 1]
                 ]);
                 const AxisDeterm = 0;*/
-                const rotArray={x:0,y:0,z:0};
                 const axisDirection=math.matrix([[1,0,0],[0,1,0],[0,0,1]]);
                 cubeGroup[i + 1][j + 1][k + 1] = {
                     cube, //Object contains cube element
@@ -381,7 +384,6 @@ function makeInstanceCube() { //Create and initialize 27 cubes
                     storePosition, //store the position of each rotation of PI/2 ends(makes the rotation more accurate)
                     angle, //store the rotation angle while rotation of PI/2
                     axisDirection,
-                    rotArray
                     /*  rotAxisYMatrix,   
                       rotAxisZMatrix,
                       AxisDeterm*/ //
