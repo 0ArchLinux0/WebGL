@@ -3357,7 +3357,7 @@ function step6_LeftTop_To_RightBottom_just() { //Set edges of yellow face in rig
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 12) {
+    if (step2_1_count == 14) {
         i = 0;
         step2_1_count = 0;
         step6();
@@ -3401,6 +3401,12 @@ function step6_LeftTop_To_RightBottom_just() { //Set edges of yellow face in rig
         case 11:
             R.RotateAxis("Z", -1, -1);
             break;
+        case 12:
+            R.RotateAll("X",1,1);
+            break;
+        case 13:
+            R.RotateAll("X",1,1);
+            break;
     }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
@@ -3412,7 +3418,7 @@ function step6_LeftTop_To_RightBottom() { //Set edges of yellow face in right po
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 12) {
+    if (step2_1_count == 14) {
         i = 0;
         step2_1_count = 0;
         solveCubeEndNotify();
@@ -3456,6 +3462,12 @@ function step6_LeftTop_To_RightBottom() { //Set edges of yellow face in right po
         case 11:
             R.RotateAxis("Z", -1, -1);
             break;
+        case 12:
+            R.RotateAll("X",1,1);
+            break;
+        case 13:
+            R.RotateAll("X",1,1);
+            break;
     }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
@@ -3467,7 +3479,7 @@ function step6_RightBottom_To_LeftTop() { //Set edges of yellow face in right po
         i = 1;
         step2_1_count++;
     }
-    if (step2_1_count == 12) {
+    if (step2_1_count == 14) {
         i = 0;
         step2_1_count = 0;
         solveCubeEndNotify();
@@ -3510,6 +3522,12 @@ function step6_RightBottom_To_LeftTop() { //Set edges of yellow face in right po
             break;
         case 11:
             R.RotateAxis("X", -1, 1);
+            break;
+        case 12:
+            R.RotateAll("X",1,1);
+            break;
+        case 13:
+            R.RotateAll("X",1,1);
             break;
     }
     controls.update(); //Update
