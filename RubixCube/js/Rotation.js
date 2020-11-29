@@ -50,7 +50,7 @@ let clockwise;
 let value;
 let needExecute;
 let Initialized = false;
-export async function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, needExecuteParam) {
+/*export async function RotateAxisRender(axisNameParam, clockwiseParam, valueParam, needExecuteParam) {
     if (!Initialized) {
         console.log("initialized");
         axisName = axisNameParam;
@@ -73,7 +73,7 @@ export async function RotateAxisRender(axisNameParam, clockwiseParam, valueParam
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
     requestAnimationFrame(RotateAxisRender); // No parameter come in
-}
+}*/
 
 export const RotateAxis = (axisName, clockwise, value) => {
     count++;

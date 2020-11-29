@@ -37,19 +37,37 @@
  #shuffle{
  	position :fixed;
  	height:6%;
- 	width:70px;
- 	top:25%;
- 	left:30%;
- 	background-color: #ffffff;
+ 	width:150px;
+ 	bottom:20%;
+ 	left:25%;
+ 	font-size: 1rem;
+ 	border: 0px;
+ 	border-radius: 30px;
+ 	background-color: #dbe4ff;
 
  }
 
  #solve{
  	position :fixed;
  	height:6%;
- 	width:60px;
- 	top:25%;
+ 	width:150px;
+ 	bottom:20%;
  	left:65%;
- 	background-color: #ffffff;
+ 	font-size: 1rem;
+ 	border: 0px;
+ 	border-radius: 30px;
+ 	background-color: #dbe4ff;
 
+ }
+
+ #resetCam{
+ 	position :fixed;
+ 	height:6%;
+ 	width:150px;
+ 	bottom:10%;
+ 	left:45%;
+ 	font-size: 1rem;
+ 	border: 0px;
+ 	border-radius: 30px;
+ 	background-color: #dbe4ff;
  }

@@ -3,7 +3,9 @@ import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources
 import * as R from './Rotation.js';
 import { isMobile } from './mobile_detect.js';
 import * as CubeSolver from './CubeSolver.js'
+
 export const scene = new THREE.Scene();
+
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15);
 
 const canvas = document.querySelector('#canvas');
@@ -25,15 +27,16 @@ canvas.height = window.innerHeight * pixelRatio;
 let prevWidth = canvas.width;
 let prevHeight = canvas.height;
 
-
+/*{antialias: true}*/
 let isDrag = false;
 let isDown = false;
 let isTouchMove = false;
 let buttonDown = false;
 
-export const renderer = new THREE.WebGLRenderer({ canvas }); //Render on canvas
+export const renderer = new THREE.WebGLRenderer({ antialias: true, canvas /*alpha: true*/ });
+renderer.antialias = true; //Render on canvas
 renderer.setSize(window.innerWidth, window.innerHeight); //setting drawing buffersize
-renderer.setClearColor(0xdee2e6); //Background color 
+renderer.setClearColor(0xbac8ff); //Background color 
 document.body.appendChild(renderer.domElement); //Push
 
 const COLOR_DIRECTIONS = {
@@ -45,24 +48,67 @@ const COLOR_DIRECTIONS = {
     "BACK": new THREE.Color("orange"),
 }
 
-const setMaterialColors = (x, y, z, materials) => { //Create Materials with Color on each face
+const geometry = new THREE.Geometry();
+
+for (let i = 0; i < 10000; i++) {
+    const star = new THREE.Vector3();
+    star.x = THREE.Math.randFloatSpread(2000);
+    star.y = THREE.Math.randFloatSpread(2000);
+    star.z = THREE.Math.randFloatSpread(2000);
+
+    geometry.vertices.push(star)
+}
+
+const material = new THREE.PointsMaterial({
+    color: 0xffffff
+});
+const starField = new THREE.Points(geometry, material);
+scene.add(starField);
+
+var loader = new THREE.TextureLoader();
+
+const logoCubeTexture = loader.load('./image/MinJun.png');
+const whiteCubeTexture = loader.load('./image/CopyrightTop.png');
+const poweredTexture = loader.load('./image/PoweredBy.png');
+//fgscene.background = groundTexture;
+/*groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+groundTexture.repeat.set( 1, 1 );
+groundTexture.anisotropy = 16;
+groundTexture.encoding = THREE.sRGBEncoding;
+
+const groundMaterial = new THREE.MeshLambertMaterial( { map: groundTexture } );
+
+let mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 100, 100 ), groundMaterial );
+mesh.position.y = - 250;
+mesh.rotation.x = - Math.PI / 2;
+mesh.receiveShadow = true;
+scene.add( mesh );
+//scene.background = groundTexture;
+
+*/
+
+
+const setMaterialColors = (x, y, z) => { //Create Materials with Color on each face
 
     const colorMaterials = [];
 
     for (let i = 0; i < 6; i++) {
-        colorMaterials.push(new THREE.MeshBasicMaterial({ color: "#282828" }));
+        colorMaterials.push(new THREE.MeshStandardMaterial({ color: "#282828" }));
     }
-    x == 1 && (colorMaterials[0] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["RIGHT"] }));
-    x == -1 && (colorMaterials[1] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["LEFT"] }));
-    y == 1 && (colorMaterials[2] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["UP"] }));
-    y == -1 && (colorMaterials[3] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["DOWN"] }));
-    z == 1 && (colorMaterials[4] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["FRONT"] }));
-    z == -1 && (colorMaterials[5] = new THREE.MeshBasicMaterial({ color: COLOR_DIRECTIONS["BACK"] }));
+    x == 1 && (colorMaterials[0] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["RIGHT"], roughness: 0.1, metalness: 0.1 }));
+    x == -1 && (colorMaterials[1] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["LEFT"], roughness: 0.1, metalness: 0.1 }));
+    y == 1 && (colorMaterials[2] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["UP"], roughness: 0.1, metalness: 0.1 }));
+    y == -1 && (colorMaterials[3] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["DOWN"], roughness: 0.1, metalness: 0.1 }));
+    z == 1 && (colorMaterials[4] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["FRONT"], roughness: 0.1, metalness: 0.1 }));
+    z == -1 && (colorMaterials[5] = new THREE.MeshStandardMaterial({ color: COLOR_DIRECTIONS["BACK"], roughness: 0.1, metalness: 0.1 }));
+    (y == 1 && x == 0 && z == 0) && (colorMaterials[2] = new THREE.MeshStandardMaterial({ map: logoCubeTexture, roughness: 0.1, metalness: 0.1 }));
+    (y == 1 && x == 1 && z == 0) && (colorMaterials[2] = new THREE.MeshStandardMaterial({ map: whiteCubeTexture, roughness: 0.1, metalness: 0.1 }));
+    (y == 1 && x == -1 && z == 0) && (colorMaterials[2] = new THREE.MeshStandardMaterial({ map: poweredTexture, roughness: 0.1, metalness: 0.1 }));
 
     return colorMaterials;
 }
 
- export const cubeGroup = [
+export const cubeGroup = [
     [
         [],
         [],
@@ -79,7 +125,24 @@ const setMaterialColors = (x, y, z, materials) => { //Create Materials with Colo
         []
     ]
 ]; //Better look than initializeing with for loop
-export const cubeRotateState=[math.matrix([[1,0,0],[0, 1, 0],[0,0,1]])];
+export const cubeRotateState = [math.matrix([
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+])];
+
+const settings = {
+    radius: { value: 0.2 }
+}
+
+/*loader.setCrossOrigin( "" );
+loader.setPath( 'https://threejs.org/examples/textures/cube/pisa/' );*/
+
+/*var cubeTexture = loader.load( [
+  'px.png', 'nx.png',
+  'py.png', 'ny.png',
+  'pz.png', 'nz.png'
+] );*/
 
 makeInstanceCube();
 
@@ -88,16 +151,47 @@ camera.position.x = 4; //Set camera's default position
 camera.position.y = 4;
 camera.position.z = 4;
 
+let light = new THREE.DirectionalLight(0xffffff, 0.5);
+//light.position.setScalar(10);
+light.position.set(4, 4, 4);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+
+
+
 { //Set light
     const color = 0xFFFFFF;
-    const intensity = 1;
-    /*      const light = new THREE.DirectionalLight(color, intensity); //Direct Light
-     
-    /*    light.position.set(-1, 2, 4);
-     */
-    const light = new THREE.AmbientLight(color, intensity); //Light up the entire space
-    scene.add(light); //Add
+    const intensity = 0.2;
+    // const light_background = new THREE.DirectionalLight(color, intensity); //Direct Light*/
 
+    // light_background.position.set(-1, 2, 4);
+
+    const light_background = new THREE.AmbientLight(color, intensity); //Light up the entire space
+    scene.add(light_background); //Add
+
+}
+
+
+
+//var loader = new THREE.CubeTextureLoader();
+/*loader.setCrossOrigin( "" );
+loader.setPath( 'https://threejs.org/examples/textures/cube/pisa/' );
+
+var cubeTexture = loader.load( [
+  'px.png', 'nx.png',
+  'py.png', 'ny.png',
+  'pz.png', 'nz.png'
+] );
+
+scene.background= cubeTexture;/*'#ffffff';*/
+function resetCam(){
+    buttonDown=true;
+    camera.position.x = 4; //Set camera's default position
+    camera.position.y = 4;
+    camera.position.z = 4;
+    render();
+    setTimeout(()=>{buttonDown=false;},5);
 }
 
 let renderRequested = false;
@@ -114,12 +208,20 @@ function render(time) { //Render(When camera rotate or etc...)
         camera.aspect = canvas.width / canvas.height;
         camera.updateProjectionMatrix();
     }
+
+    camera.updateMatrixWorld(); //Update the camera location
+    const vector = camera.position.clone(); //Get camera position and put into variable
+    vector.applyMatrix4(camera.matrixWorld); //Hold the camera location in matrix world
+    light.position.set(vector.x, vector.y, vector.z);
+    light.updateMatrixWorld();
+
+
     controls.update();
     renderer.render(scene, camera);
     renderRequested = undefined;
 }
-
-render();
+window.addEventListener("load", render);
+//setTimeout(()=>{render();},3);
 
 function requestRender() { //Check if Render is running
 
@@ -130,14 +232,14 @@ function requestRender() { //Check if Render is running
 
 }
 
-    function requestRender_animate() { //Check if Render is running
+function requestRender_animate() { //Check if Render is running
 
-        if (!isRunning) {
-            isRunning = true;
-            requestAnimationFrame(animate); //Callback render
-        }
-
+    if (!isRunning) {
+        isRunning = true;
+        requestAnimationFrame(animate); //Callback render
     }
+
+}
 
 let isRunning = false;
 let ran_num = parseInt(Math.random() * 3 - 0.1);
@@ -153,7 +255,8 @@ function requestRenderShuffle() {
 let i = 0;
 let arg1 = String.fromCharCode(88 + ran_num); //88 is 'X'
 let arg2 = (parseInt(Math.random() * 100) % 3 - 1);;
-let clickCount=0;
+let clickCount = 0;
+
 function animate(time) {
     isRunning = true; //Prevent malfunctioning when click multiple times in a row,'isRunning=undefiend' in line 159 causes  when button clicked
     if (i++ == 60) { //R.RotateAxis rotates PI/120 so we need 60times of execution to rotate PI/2 radians.
@@ -166,17 +269,17 @@ function animate(time) {
         return;
     }
     //console.log("called animate");
-     R.RotateAxis(arg1, 2*(ran_num%2)-1, arg2); //Rotate in Axis arg1, at row index arg2
-     /*switch (clickCount) {
-         case 0:R.RotateAxis("X", -1, 1);
-             // statements_1
-             break;
-         case 1:R.RotateAxis("Z", 1, 1);
-             // statements_def
-             break;
-         case 2: R.RotateAxis("Z", 1, 1);
-     }*/
-      //Rotate in Axis arg1, at row index arg2
+    R.RotateAxis(arg1, 2 * (ran_num % 2) - 1, arg2); //Rotate in Axis arg1, at row index arg2
+    /*switch (clickCount) {
+        case 0:R.RotateAxis("X", -1, 1);
+            // statements_1
+            break;
+        case 1:R.RotateAxis("Z", 1, 1);
+            // statements_def
+            break;
+        case 2: R.RotateAxis("Z", 1, 1);
+    }*/
+    //Rotate in Axis arg1, at row index arg2
     //R.RotateAxisRender("X", ANTICLOCKWISE, -1,4);
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //Update when screen size change
         canvas.width = window.innerWidth * pixelRatio;
@@ -190,7 +293,7 @@ function animate(time) {
     }
     controls.update(); //Update
     renderer.render(scene, camera); //render to display on screen
-     requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 
 }
 
@@ -207,22 +310,22 @@ let needExecute = 1; //Number of times the fucntion has to be executed
 let needExecuteInitialized = false;
 let isSolving = false;
 
-const solveCubeButtonListener = (time) => { //Solve Cube when solve button clicked
-    if (isRunning||isSolving) return;
-    camera.position.x=4;
-    camera.position.y=4;
-    camera.position.z=4;
-    camera.lookAt(-1,-1,-1);
-    isSolving=true;
-    buttonDown=true;
+const solveCubeButtonListener = () => { //Solve Cube when solve button clicked
+    if (isRunning || isSolving) return;
+    camera.position.x = 4;
+    camera.position.y = 4;
+    camera.position.z = 4;
+    camera.lookAt(-1, -1, -1);
+    isSolving = true;
+    buttonDown = true;
 
     CubeSolver.solveCubeStart();
-    
+
 }
-   
-export const solveCubeEndNotify=()=>{
-    isSolving=false;
-    buttonDown=false;;
+
+export const solveCubeEndNotify = () => {
+    isSolving = false;
+    buttonDown = false;;
 }
 
 let exeCount = 0;
@@ -245,7 +348,7 @@ function animate_shuffle(time) { //To shuffle the Rubix Cube, we need to execute
         return;
     }
     buttonDown = true;
-    R.RotateAxis(arg1, 2*(ran_num%2)-1 , arg2); //Rotate
+    R.RotateAxis(arg1, 2 * (ran_num % 2) - 1, arg2); //Rotate
 
     if ((!isMobile) && (prevWidth !== canvas.width) || (prevHeight !== canvas.heigth)) { //size change
         canvas.width = window.innerWidth * pixelRatio;
@@ -271,7 +374,7 @@ function onDown(e) {
     pos_down[0] = e.pageX;
     pos_down[1] = e.pageY;
     isDown = true;
-    setTimeout(()=>{isDown=false}, 1200);
+    setTimeout(() => { isDown = false }, 1200);
     //console.log("ondown");
 }
 
@@ -279,20 +382,21 @@ const onUp = (e) => {
     // setTimeout(()=>{
     pos_up[0] = e.pageX;
     pos_up[1] = e.pageY;
-   // console.log("onup");
+    // console.log("onup");
     const v = Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1]);
     // console.log(v);
-    console.log("bdown" + buttonDown);
+    // console.log("bdown" + buttonDown);
     //If more than 1.2sec passes or mouse is dragged or something is running return.
-    if (!isDown||(buttonDown||((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20))) {
-    //    console.log("return");    
+    if (!isDown || (buttonDown || ((Math.abs(pos_up[0] - pos_down[0]) + Math.abs(pos_up[1] - pos_down[1])) > 20))) {
+        //    console.log("return");    
         return;
     }
-    if(isMobile) requestRender_animate();
+    if (isMobile) requestRender_animate();
     else animate();
     isDown = false;
     //}, 50);
 };
+
 
 /*  function onMouseMove(){
       console.log("onmouse MOve!!!");
@@ -337,9 +441,11 @@ const onUp = (e) => {
 //######
 const btn_solve = document.getElementById("solve");
 const btn_shuffle = document.getElementById("shuffle");
+const btn_resetCam = document.getElementById("resetCam");
 controls.addEventListener('change', requestRender, false); //called first at initializing
 btn_shuffle.addEventListener('pointerup', requestRenderShuffle, false);
 btn_solve.addEventListener('pointerup', solveCubeButtonListener, false);
+btn_resetCam.addEventListener('pointerup', resetCam, false);
 
 window.addEventListener('pointerup', onUp, false);
 window.addEventListener('pointerdown', onDown, false);
@@ -349,6 +455,39 @@ window.addEventListener('resize', requestRender, false);
 //window.addEventListener('touchstart', onTouchStart, false);
 //window.addEventListener('touchmove', onTouchMove, false);
 //window.addEventListener('touchend', onTouchEnd, false);
+function createBoxWithRoundedEdges(width, height, depth, radius0, smoothness) {
+    let shape = new THREE.Shape();
+    let eps = 0.0001;
+    let radius = radius0 - eps;
+    shape.absarc(eps, eps, eps, -Math.PI / 2, -Math.PI, true);
+    shape.absarc(eps, height - radius * 2, eps, Math.PI, Math.PI / 2, true);
+    shape.absarc(width - radius * 2, height - radius * 2, eps, Math.PI / 2, 0, true);
+    shape.absarc(width - radius * 2, eps, eps, 0, -Math.PI / 2, true);
+    //////////////////////////////now
+    const geometry = new THREE.ExtrudeBufferGeometry(shape, {
+        //amount: depth - radius0*2  ,
+        depth: depth - radius0 * 2,
+        bevelEnabled: true,
+        bevelSegments: smoothness * 2,
+        steps: 1,
+        bevelSize: radius,
+        bevelThickness: radius0,
+        curveSegments: smoothness
+    });
+
+    geometry.center();
+
+    return geometry;
+}
+/*const cubeMat = new THREE.MeshStandardMaterial( {
+    color: '#000000', //Math.random() * 0x777777 + 0x777777,
+    envMap: cubeTexture,
+    metalness: i / 9,
+    roughness: 1 - i / 9,
+  } );*/
+/////////////////////////now
+
+
 
 function makeInstanceCube() { //Create and initialize 27 cubes
     const Cubegeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
@@ -356,9 +495,77 @@ function makeInstanceCube() { //Create and initialize 27 cubes
         for (let j = -1; j < 2; j++) {
             for (let k = -1; k < 2; k++) {
 
+                /*  const boxmaterials = new THREE.MeshBasicMaterial({});
+                  const cubeMaterialColors = setMaterialColors(i, j, k);
+                  const cube = new THREE.Mesh( createBoxWithRoundedEdges( 0.9, 0.9, 0.9 , 2 / 9, 16 ), cubeMaterialColors );*/
+
+
+
+
+                const Boxgeometry = new THREE.BoxBufferGeometry(1, 1, 1, 30, 30, 30);
+
                 const boxmaterials = new THREE.MeshBasicMaterial({});
-                const cubeMaterialColors = setMaterialColors(i, j, k, boxmaterials);
-                const cube = new THREE.Mesh(Cubegeometry, cubeMaterialColors);
+                const cubeMaterialColors = setMaterialColors(i, j, k);
+                var boxMat = new THREE.MeshStandardMaterial({ color: cubeMaterialColors /*, envMap: cubeTexture*/ });
+
+                cubeMaterialColors.forEach((e) => {
+                    e.onBeforeCompile = shader => {
+                        shader.uniforms.boxSize = {
+                            value: new THREE.Vector3(
+                                Boxgeometry.parameters.width,
+                                Boxgeometry.parameters.height,
+                                Boxgeometry.parameters.depth
+                            ).multiplyScalar(0.5)
+                        };
+                        shader.uniforms.radius = settings.radius;
+                        shader.vertexShader = `
+    uniform vec3 boxSize;
+    uniform float radius;
+    ` + shader.vertexShader;
+                        shader.vertexShader = shader.vertexShader.replace(
+                            `#include <begin_vertex>`,
+                            `#include <begin_vertex>
+    
+    float maxRadius = clamp(radius, 0.0, min(boxSize.x, min(boxSize.y, boxSize.z)));
+    vec3 signs = sign(position);
+    
+    vec3 subBox = boxSize - vec3(maxRadius);
+    
+    vec3 absPos = abs(transformed); 
+    // xy
+    vec2 sub = absPos.xy - subBox.xy;
+    if (absPos.x > subBox.x && absPos.y > subBox.y && absPos.z <= subBox.z) {
+      transformed.xy = normalize(sub) * maxRadius + subBox.xy;
+      transformed.xy *= signs.xy;
+    }
+    // xz
+    sub = absPos.xz - subBox.xz;
+    if (absPos.x > subBox.x && absPos.z > subBox.z && absPos.y <= subBox.y) {
+      transformed.xz = normalize(sub) * maxRadius + subBox.xz;
+      transformed.xz *= signs.xz;
+    }
+    // yz
+    sub = absPos.yz - subBox.yz;
+    if (absPos.y > subBox.y && absPos.z > subBox.z && absPos.x <= subBox.x) {
+      transformed.yz = normalize(sub) * maxRadius + subBox.yz;
+      transformed.yz *= signs.yz;
+    }
+    
+    // corner
+    if (all(greaterThan(absPos, subBox))){
+      vec3 sub3 = absPos - subBox;
+      transformed = (normalize(sub3) * maxRadius + subBox) * signs;
+    }
+    
+    // re-compute normals for correct shadows and reflections
+    objectNormal = all(equal(position, transformed)) ? normal : normalize(position - transformed); 
+    transformedNormal = normalMatrix * objectNormal; 
+
+    `
+                        );
+                    };
+                });
+                const cube = new THREE.Mesh(Boxgeometry, cubeMaterialColors);
                 cubeGroup[i + 1][j + 1].push(cube); //Can get init position by simple subtraction
                 cube.position.x = i;
                 cube.position.y = j;
@@ -366,18 +573,12 @@ function makeInstanceCube() { //Create and initialize 27 cubes
 
                 const angle = { x: 0, y: 0, z: 0 };
                 const storePosition = { x: 0, y: 0, z: 0, stored: false };
-               /* const rotAxisYMatrix = math.matrix([
+
+                const axisDirection = math.matrix([
                     [1, 0, 0],
                     [0, 1, 0],
                     [0, 0, 1]
                 ]);
-                const rotAxisZMatrix = math.matrix([
-                    [1, 0, 0],
-                    [0, 1, 0],
-                    [0, 0, 1]
-                ]);
-                const AxisDeterm = 0;*/
-                const axisDirection=math.matrix([[1,0,0],[0,1,0],[0,0,1]]);
                 cubeGroup[i + 1][j + 1][k + 1] = {
                     cube, //Object contains cube element
 
@@ -403,4 +604,14 @@ function makeInstanceCube() { //Create and initialize 27 cubes
             }
         }
     }
+
+    /*const resetCam=()=>{
+        camera.position.x = 4; //Set camera's default position
+        camera.position.y = 4;
+        camera.position.z = 4;
+        camera.updateMatrixWorld();
+        console.log("cllicked");
+    }*/
+
+
 }

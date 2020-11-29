@@ -21,7 +21,7 @@ let needExecuteInitialized = false;
 //let isSolving = false;
 
 export const solveCubeStart = () => { //Solve Cube when solve button clicked
-    console.log("in first"+needExecuteInitialized+"count is "+count+"count Execute is: "+countExecute+" needExecute is "+needExecute);
+    //console.log("in first"+needExecuteInitialized+"count is "+count+"count Execute is: "+countExecute+" needExecute is "+needExecute);
     if (i++ == 60) { //Reset when rotates PI/2
         i = 1;
         countExecute++;
@@ -54,7 +54,7 @@ export const solveCubeStart = () => { //Solve Cube when solve button clicked
 }
 
 export const step1_1 = () => { //Make white face look up
-    console.log("step1_1 called Initialized "+Initialized);
+    //console.log("step1_1 called Initialized "+Initialized);
     if (!Initialized) { //Store init position just one time
         Initialized = true;
         storedX = cubeGroup[1][2][1].cube.position.x; //Position of the white face center cube
@@ -89,7 +89,7 @@ export const step1_1 = () => { //Make white face look up
 }
 
 const step1_2 = () => {
-        console.log("step1_2 called");
+        //console.log("step1_2 called");
 
     let needExecute;
     if (!Initialized) { //Store init position just one time
@@ -488,7 +488,6 @@ const step6_helper = () => { //Makes all the edges be in the right place.
         [0, 1, 0],
         [-1, 0, 0]
     ]);
-    console.log("helper execute i is: "+i);
 
   
     if (storeRightCube.cube.position.x == -1 && storeRightCube.cube.position.z == 1) {
@@ -535,17 +534,14 @@ const step4 = () => { //Make edges face Y Axis
     let rightFaceBinarySum = 0;
     let addNum = 0;
     for (let i = 0; i < 4; i++) {
-        console.log(cube[i].axisDirection.subset(math.index(1, 1)));
         if (cube[i].axisDirection.subset(math.index(1, 1)) == -1) {
             if (cube[i].cube.position.z == 1) addNum = 1;
             else if (cube[i].cube.position.z == -1) addNum = 4;
             else if (cube[i].cube.position.x == 1) addNum = 2;
             else addNum = 8;
-            console.log("check: ");
             rightFaceBinarySum += addNum;
         }
     }
-    console.log("result" + rightFaceBinarySum);
     switch (rightFaceBinarySum) {
         case 0:
             step4_noMatch();
@@ -574,12 +570,10 @@ const step4 = () => { //Make edges face Y Axis
 }
 
 export const step2_1 = (i, j, k) => {
-    console.log("step2 called");
     const cube = cubeGroup[i][j][k].cube; //Start with cube [1,1,0]
     const matrix = cubeGroup[i][j][k].axisDirection;
-    console.log(cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
+   // console.log(cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
     if (matrix.subset(math.index(1, 0)) == 1) { //Facing +X
-        console.log("x");
 
         if (cube.position.y == 1) { //checked
             rotate_X_1(); ////minjun chekced!!!!!!!!!
@@ -591,8 +585,7 @@ export const step2_1 = (i, j, k) => {
             else rotate_X_0_2();
         }
     } else if (matrix.subset(math.index(1, 0)) == -1) { //Facing -X
-        console.log("-x");
-
+       // console.log("-x");
         if (cube.position.y == 1) {
             rotate_minusX_1(); ///////?dd
         } else if (cube.position.y == -1) {
@@ -603,8 +596,7 @@ export const step2_1 = (i, j, k) => {
             else rotate_minusX_0_2(); //minjun chekced!!!!!!!!!
         }
     } else if (matrix.subset(math.index(1, 1)) == 1) { //Facing +Y axis
-        console.log("y");
-
+        //console.log("y");
         if (cube.position.x == 1) {
             step2_1_execute();
         } else if (cube.position.x == -1) {
@@ -616,7 +608,7 @@ export const step2_1 = (i, j, k) => {
         }
 
     } else if (matrix.subset(math.index(1, 1)) == -1) { //Facing -Y axis
-        console.log("-y");
+        //console.log("-y");
         if (cube.position.x == 1) {
             rotate_minusY_0(); //////////////Checked!
         } else if (cube.position.x == -1) {
@@ -627,7 +619,7 @@ export const step2_1 = (i, j, k) => {
             rotate_minusY_3(); //////////////Checked!
         }
     } else if (matrix.subset(math.index(1, 2)) == 1) { //Facing Z
-        console.log("z");
+        //console.log("z");
         if (cube.position.y == 1) {
             rotate_Z_1(); //minjun chekced!!!!!!!!!
         } else if (cube.position.y == -1) {
@@ -638,7 +630,7 @@ export const step2_1 = (i, j, k) => {
             rotate_Z_0_2(); //minjun chekced!!!!!!!!!
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
-        console.log("-z");
+        //console.log("-z");
         if (cube.position.y == 1) {
             rotate_minusZ_1(); /////////////////minjun checked DDDDDDDDDD
         } else if (cube.position.y == -1) {
@@ -655,9 +647,9 @@ export const step2_2 = (i, j, k) => {
     //console.log("step2 called");
     const cube = cubeGroup[i][j][k].cube; //Start with cube [1,1,0]
     const matrix = cubeGroup[i][j][k].axisDirection;
-    console.log("in step2_2" + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
+    //console.log("in step2_2" + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
     if (matrix.subset(math.index(1, 0)) == 1) { //Facing +X
-        console.log("in step2_2 x");
+        //console.log("in step2_2 x");
 
         if (cube.position.y == 1) {
             if (cube.position.z == 1) rotate_step2_X_1();
@@ -668,7 +660,7 @@ export const step2_2 = (i, j, k) => {
             else rotate_step2_X_4(); //maybe right
         }
     } else if (matrix.subset(math.index(1, 0)) == -1) { //Facing -X
-        console.log("in step2_2 -x");
+        //console.log("in step2_2 -x");
 
         if (cube.position.y == 1) {
             if (cube.position.z == 1) rotate_step2_minusX_1();
@@ -678,7 +670,7 @@ export const step2_2 = (i, j, k) => {
             else rotate_step2_minusX_4();
         }
     } else if (matrix.subset(math.index(1, 1)) == 1) { //Facing +Y axis
-        console.log("in step2_2 y");
+        //console.log("in step2_2 y");
         if (cube.position.z == 1) {
             if (cube.position.x == 1) step2_2_execute(); //right!
             else rotate_step2_Y_1(); //right!
@@ -688,7 +680,7 @@ export const step2_2 = (i, j, k) => {
         }
 
     } else if (matrix.subset(math.index(1, 1)) == -1) { //Facing -Y axis 
-        console.log("in step2_2 -y");
+        //console.log("in step2_2 -y");
         if (cube.position.z == 1) {
             if (cube.position.x == 1) rotate_step2_minusY_0(); ///right
             else rotate_step2_minusY_1(); //right
@@ -698,7 +690,7 @@ export const step2_2 = (i, j, k) => {
             else rotate_step2_minusY_3();
         }
     } else if (matrix.subset(math.index(1, 2)) == 1) { //Facing Z
-        console.log("in step2_2 z");
+        //console.log("in step2_2 z");
         if (cube.position.y == 1) {
             if (cube.position.x == 1) rotate_step2_Z_0();
             else rotate_step2_Z_1(); //MINJUNCheck real! right!
@@ -708,7 +700,7 @@ export const step2_2 = (i, j, k) => {
             else rotate_step2_Z_3();
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //Facing -Z
-        console.log("in step2_2 -z");
+        //console.log("in step2_2 -z");
         if (cube.position.y == 1) {
             if (cube.position.x == 1) rotate_step2_minusZ_0();
             else rotate_step2_minusZ_1(); //MINJUNCheck real! right!
@@ -721,20 +713,20 @@ export const step2_2 = (i, j, k) => {
 }
 
 export const step3 = (i, j, k) => {
-    //console.log("step2 called");
+
     const cube = cubeGroup[i][j][k].cube; //Start with cube [1,1,0]
     const matrix = cubeGroup[i][j][k].axisDirection;
-    console.log("in step3 " + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
-    console.log(matrix);
+    //console.log("in step3 " + cube.position.x + ", " + cube.position.y + ", " + cube.position.z);
+
     if (matrix.subset(math.index(1, 0)) == 1) { //If cube element's Axis Z Facing +X(Orange face at start)
-        console.log("in step3 x");
+        //console.log("in step3 x");
         if (cube.position.z == 1) {
             rotate_step3_Z_1();
         } else {
             rotate_step3_Y_3();
         }
     } else if (matrix.subset(math.index(1, 0)) == -1) { //If cube element's Axis Z Facing -X
-        console.log("in step3 -x");
+       // console.log("in step3 -x");
 
         if (cube.position.z == 1) {
             rotate_step3_Y_2();
@@ -742,7 +734,7 @@ export const step3 = (i, j, k) => {
             rotate_step3_minusZ_1();
         }
     } else if (matrix.subset(math.index(1, 1)) == 1) { //If cube element's Axis Z Facing +Y axis
-        console.log("in step3 y");
+        //console.log("in step3 y");
         if (cube.position.x == 1) {
             if (cube.position.z == 1) rotate_step3_X_2();
             else rotate_step3_minusZ_2();
@@ -751,7 +743,7 @@ export const step3 = (i, j, k) => {
             else rotate_step3_minusX_3();
         }
     } else if (matrix.subset(math.index(1, 1)) == -1) { //If cube element's Axis Z Facing -Y axis
-        console.log("in step3 -y");
+        //console.log("in step3 -y");
         if (cube.position.x == 1) {
             if (cube.position.z == 1) step3_execute();
             else rotate_step3_X_3();
@@ -760,14 +752,14 @@ export const step3 = (i, j, k) => {
             else rotate_step3_minusZ_3();
         }
     } else if (matrix.subset(math.index(1, 2)) == 1) { //If cube element's Axis Z Facing Z
-        console.log("in step3 z");
+        //console.log("in step3 z");
         if (cube.position.x == 1) {
             rotate_step3_Y_1();
         } else {
             rotate_step3_minusX_1();
         }
     } else if (matrix.subset(math.index(1, 2)) == -1) { //If cube element's Axis Z Facing -Z
-        console.log("in step3 -z");
+        //console.log("in step3 -z");
         if (cube.position.x == 1) {
             rotate_step3_X_1();
         } else {
@@ -925,7 +917,7 @@ function rotate_minusX_1() {
         step2_1_execute();
         return;
     }
-    console.log(step2_1_count);
+    //console.log(step2_1_count);
     switch (step2_1_count) {
         case 0:
             R.RotateAxis("X", -1, -1);
@@ -2780,7 +2772,7 @@ const step4_minusY_1 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAxis("Y", -1, 1);
     controls.update(); //Update
@@ -2798,7 +2790,7 @@ const step4_Y_1 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAxis("Y", 1, 1);
 
@@ -2822,7 +2814,7 @@ const step4_Y_2 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAxis("Y", 1, 1);
 
@@ -3005,7 +2997,7 @@ const step4_1_minusY_1 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAll("Y", -1);
     controls.update(); //Update
@@ -3023,7 +3015,7 @@ const step4_1_Y_1 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAll("Y", 1);
 
@@ -3047,7 +3039,7 @@ const step4_1_Y_2 = (callback) => {
     if (isInitialized == false) {
         isInitialized = true;
         storeCallback = callback;
-        console.log("callback stored");
+        //console.log("callback stored");
     }
     R.RotateAll("Y", 1);
 
