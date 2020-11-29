@@ -71,3 +71,30 @@
  	border-radius: 30px;
  	background-color: #dbe4ff;
  }
+
+ @media only screen and (max-width: 992 px) {
+ 	 #shuffle{
+ 	position :fixed;
+ 	height:6%;
+ 	width:120px;
+ 	bottom:20%;
+ 	left:15%;
+ 	font-size: 1rem;
+ 	border: 0px;
+ 	border-radius: 30px;
+ 	background-color: #dbe4ff;
+
+ }
+
+ #solve{
+ 	position :fixed;
+ 	height:6%;
+ 	width:120px;
+ 	bottom:20%;
+ 	right:15%;
+ 	font-size: 1rem;
+ 	border: 0px;
+ 	border-radius: 30px;
+ 	background-color: #dbe4ff;
+
+ }
